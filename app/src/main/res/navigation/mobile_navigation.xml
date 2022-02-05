@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/mobile_navigation"
+	app:startDestination="@+id/navigation_home">
+
+	<fragment
+		android:id="@+id/navigation_home"
+		android:name="com.example.audiobook.fragments.HomeFragment"
+		android:label="@string/title_home"
+		tools:layout="@layout/fragment_home" >
+		<action
+			android:id="@+id/action_navigation_home_to_navigation_book"
+			app:destination="@id/navigation_book" />
+	</fragment>
+
+	<fragment
+		android:id="@+id/navigation_search"
+		android:name="com.example.audiobook.fragments.SearchFragment"
+		android:label="@string/title_search"
+		tools:layout="@layout/fragment_search" >
+		<argument
+			android:name="bookLink"
+			app:argType="string" />
+		<action
+			android:id="@+id/action_navigation_search_to_listBooksFragment"
+			app:destination="@id/listBooksFragment" />
+	</fragment>
+
+	<fragment
+		android:id="@+id/navigation_library"
+		android:name="com.example.audiobook.fragments.LibraryFragment"
+		android:label="@string/title_library"
+		tools:layout="@layout/fragment_library" >
+		<action
+			android:id="@+id/action_navigation_library_to_navigation_book"
+			app:destination="@id/navigation_book" />
+	</fragment>
+
+	<fragment
+		android:id="@+id/navigation_book"
+		android:name="com.example.audiobook.fragments.BookFragment"
+		android:label="BookFragment"
+		tools:layout="@layout/fragment_book">
+		<action
+			android:id="@+id/action_navigation_book_to_navigation_audio"
+			app:destination="@id/navigation_audio" />
+	</fragment>
+	<activity
+		android:id="@+id/navigation_audio"
+		android:name="com.example.audiobook.fragments.AudioFragment"
+		android:label="fragment_audio"
+		tools:layout="@layout/fragment_audio" />
+	<fragment
+		android:id="@+id/listBooksFragment"
+		android:name="com.example.audiobook.fragments.ListBooksFragment"
+		android:label="fragment_list_books"
+		tools:layout="@layout/fragment_list_books" >
+		<action
+			android:id="@+id/action_listBooksFragment_to_navigation_book"
+			app:destination="@id/navigation_book" />
+	</fragment>
+</navigation>
