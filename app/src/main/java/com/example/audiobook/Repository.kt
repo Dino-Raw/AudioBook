@@ -146,7 +146,8 @@ class Repository {
                     )
                 }
 
-            val script = doc.select("body").select("script")[4].toString()
+            val script = doc.select("body").select("script").toString()
+            //val script = doc.select("body").select("script")[4].toString()
 
             val http: Matcher = Pattern.compile("(?=(http))").matcher(script)
             val mp3: Matcher = Pattern.compile("(?=(mp3))").matcher(script)
@@ -157,7 +158,6 @@ class Repository {
             while (http.find()) {
                 chapterUrlStart.add(http.start())
             }
-
             while (mp3.find()) {
                 chapterUrlEnd.add(mp3.start())
             }
@@ -165,7 +165,6 @@ class Repository {
             for(i in 0 until chaptersTitle.size)
             {
                 var chapterUrl = ""
-
                 for(j in chapterUrlStart[i]..chapterUrlEnd[i]+2)
                 {
                     chapterUrl += script[j]
