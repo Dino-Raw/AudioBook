@@ -13,6 +13,8 @@ import com.example.audiobook.adapters.ListBooksAdapter
 import com.example.audiobook.viewmodels.ListBooksViewModel
 import kotlinx.android.synthetic.main.fragment_list_books.*
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.activity_main.*
+import java.lang.NullPointerException
 
 
 class ListBooksFragment(private var url: String = "", private var type: String = "") : Fragment() {
@@ -34,7 +36,8 @@ class ListBooksFragment(private var url: String = "", private var type: String =
         var totalItemCount: Int
         var loading = true
 
-        if (url == "" && type == "") {
+        if (url == "" && type == "")
+        {
             type = arguments?.getString("type").toString()
             url = arguments?.getString("url").toString()
         }
@@ -45,15 +48,21 @@ class ListBooksFragment(private var url: String = "", private var type: String =
 
         list_books.layoutManager = layoutManager
         list_books.adapter = listBooksAdapter
+        try
+        {
+            viewModel.getListBooks(url, type).observe(viewLifecycleOwner, Observer {
 
-        viewModel.getListBooks(url, type).observe(viewLifecycleOwner, Observer {
-            listBooksAdapter.add(it)
-        })
+                listBooksAdapter.add(it)
+            })
 
-        viewModel.getLastPage(url).observe(viewLifecycleOwner, Observer {
-            pageLast = it
-        })
-
+            viewModel.getLastPage(url).observe(viewLifecycleOwner, Observer {
+                pageLast = it
+            })
+        }
+        catch (e: NullPointerException)
+        {
+            e.printStackTrace()
+        }
         list_books.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)

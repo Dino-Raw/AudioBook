@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.fragment_my_books.*
 import java.io.IOException
 
 
-class MyBooksFragment(val condition: String, val books: MutableList<String>): Fragment() {
+class MyBooksFragment(val condition: String, private val books: MutableList<String>): Fragment() {
 
     private lateinit var myBooksAdapter: ListBooksAdapter
 
@@ -22,16 +22,11 @@ class MyBooksFragment(val condition: String, val books: MutableList<String>): Fr
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val myBooksList = getMyBooks()
-
-        myBooksAdapter = ListBooksAdapter("library")
-
         val layoutManager = LinearLayoutManager(this.context)
-
+        myBooksAdapter = ListBooksAdapter("library")
         list_books.layoutManager = layoutManager
         list_books.adapter = myBooksAdapter
-
-        myBooksAdapter.add(myBooksList)
+        myBooksAdapter.add(getMyBooks())
 
     }
 
@@ -43,7 +38,7 @@ class MyBooksFragment(val condition: String, val books: MutableList<String>): Fr
         return inflater.inflate(R.layout.fragment_my_books, container, false)
     }
 
-    fun getMyBooks(): MutableList<Book>
+    private fun getMyBooks(): MutableList<Book>
     {
         val listBooks = mutableListOf<Book>()
 
@@ -58,7 +53,10 @@ class MyBooksFragment(val condition: String, val books: MutableList<String>): Fr
                 val bookAuthor = sharedPref?.getString("bookAuthor","Не прослушано").toString()
                 val bookReader = sharedPref?.getString("bookReader","Не прослушано").toString()
                 val bookTime = sharedPref?.getString("bookTime","Не прослушано").toString()
-
+                if (imgUrl == "Не прослушано")
+                {
+                    break
+                }
                 listBooks.add(Book(imgUrl, books[bookId].replace("$", "/"), bookTitle, bookGenre, bookAuthor, bookReader, bookTime))
             }
         }

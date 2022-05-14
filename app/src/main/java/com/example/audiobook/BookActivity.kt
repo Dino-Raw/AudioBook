@@ -17,7 +17,7 @@ import com.example.audiobook.viewmodels.ListBooksViewModel
 
 class BookActivity: FragmentActivity()  {
 
-    private var bookImgUrl = "123"
+    private lateinit var bookImgUrl : String
 
     private val viewModel by lazy {
         ViewModelProvider(this).get(ListBooksViewModel::class.java)
@@ -53,7 +53,7 @@ class BookActivity: FragmentActivity()  {
         val adapterSpinner: ArrayAdapter<String> = ArrayAdapter<String>(
             this,
             android.R.layout.simple_spinner_item,
-            mutableListOf("Не прослушано", "Слушаю", "Буду слушать", "Прослушано")
+            mutableListOf("Не прослушано", "Слушаю", "Буду слушать", "Прослушано", "Брошено")
         )
 
         adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -69,6 +69,7 @@ class BookActivity: FragmentActivity()  {
                     1 -> saveCondition("Слушаю")
                     2 -> saveCondition("Буду слушать")
                     3 -> saveCondition("Прослушано")
+                    4 -> saveCondition("Брошено")
                     else -> saveCondition("Не прослушано")
                 }
             }
@@ -111,7 +112,6 @@ class BookActivity: FragmentActivity()  {
     }
 
     private fun loadCondition(): String? {
-
         val sharedPref = this.getSharedPreferences(
             "condition_book",
             Context.MODE_PRIVATE)

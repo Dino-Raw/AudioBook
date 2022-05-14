@@ -4,25 +4,32 @@ import com.example.audiobook.models.Book
 import com.example.audiobook.models.Chapter
 import org.jsoup.Jsoup
 import java.io.IOException
+import java.net.UnknownHostException
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 class Repository {
 
     fun getLastPage(url: String): Int? {
-        val doc = Jsoup
-            .connect("https://m.knigavuhe.org/$url")
-            .get()
-
-        return doc
-            .select("div[class=page_content]")
-            .select("div.pn_page_buttons")
-            .select("a")
-            .last()
-            ?.text()?.toInt()
+        try {
+            val doc = Jsoup
+                .connect("https://m.knigavuhe.org/$url")
+                .get()
+            return doc
+                .select("div[class=page_content]")
+                .select("div.pn_page_buttons")
+                .select("a")
+                .last()
+                ?.text()?.toInt()
+        }
+        catch(e: IOException)
+        {
+            e.printStackTrace()
+            return 0
+        }
     }
 
-    fun getListBooks(searchUrl: String, type: String): MutableList<Book>{
+    fun getListBooks(searchUrl: String, type: String): MutableList<Book>? {
         val listBooks = mutableListOf<Book>()
 
         try{
@@ -111,11 +118,17 @@ class Repository {
         catch(e: IOException)
         {
             e.printStackTrace()
+            return mutableListOf()
+        }
+        catch(e: UnknownHostException)
+        {
+            e.printStackTrace()
+            return  mutableListOf()
         }
         return listBooks
     }
 
-    fun getChapters(book_url: String): ArrayList<Chapter>
+    fun getChapters(book_url: String): ArrayList<Chapter>?
     {
         val listChapter = arrayListOf<Chapter>()
         val chaptersTime = arrayListOf<String>()
@@ -180,12 +193,18 @@ class Repository {
         catch(e: IOException)
         {
             e.printStackTrace()
+            return arrayListOf()
+        }
+        catch(e: UnknownHostException)
+        {
+            e.printStackTrace()
+            return  arrayListOf()
         }
 
         return listChapter
     }
 
-    fun getDescription(url: String): String
+    fun getDescription(url: String): String?
     {
         var description = ""
 
@@ -200,6 +219,7 @@ class Repository {
         catch(e: IOException)
         {
             e.printStackTrace()
+            return description
         }
         return description
     }

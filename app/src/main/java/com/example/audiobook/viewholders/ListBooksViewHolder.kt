@@ -16,7 +16,7 @@ class ListBooksViewHolder(itemView: View, type: String) : RecyclerView.ViewHolde
 
     private var imgUrl: ImageView = itemView.row_img
     private var bookImgUrl: String = ""
-    private var bookUrl= ""
+    private var bookUrl = ""
     private var bookTitle: TextView = itemView.row_title
     private var bookGenre: TextView = itemView.row_genre
     private var bookAuthor: TextView = itemView.row_author
@@ -25,7 +25,7 @@ class ListBooksViewHolder(itemView: View, type: String) : RecyclerView.ViewHolde
 
     init{
         itemView.setOnClickListener{
-            val intent = Intent(this.itemView.context, BookActivity::class.java)
+            val intent = Intent(itemView.context, BookActivity::class.java)
 
             intent.putExtra("bookUrl", bookUrl)
             intent.putExtra("bookTitle", bookTitle.text.toString())
