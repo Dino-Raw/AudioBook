@@ -1,11 +1,11 @@
 package com.example.audiobook
 
+import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
-import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_book.*
-import android.content.Context
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.fragment.app.FragmentActivity
@@ -13,11 +13,16 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.audiobook.models.Chapter
 import com.example.audiobook.viewmodels.ListBooksViewModel
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.Picasso.LoadedFrom
+import com.squareup.picasso.RequestCreator
+import kotlinx.android.synthetic.main.activity_book.*
 
 
 class BookActivity: FragmentActivity()  {
 
     private lateinit var bookImgUrl : String
+    private lateinit var bookImg : RequestCreator
 
     private val viewModel by lazy {
         ViewModelProvider(this).get(ListBooksViewModel::class.java)
@@ -29,6 +34,7 @@ class BookActivity: FragmentActivity()  {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_book)
 
+
         val bookUrl = intent.extras?.getString("bookUrl").toString()
 
         viewModel.getChapters(bookUrl).observe(this, Observer {
@@ -39,12 +45,12 @@ class BookActivity: FragmentActivity()  {
             setData(it)
         })
 
-
         book_player.setOnClickListener{
             val intent = Intent(this, AudioActivity::class.java)
 
             intent.putExtra("bookTitle", book_title.text.toString())
             intent.putExtra("bookImgUrl", bookImgUrl)
+            intent.putExtra("bookUrl", bookUrl)
             intent.putExtra("listChapters", listChapters)
 
             startActivity(intent)
@@ -122,10 +128,11 @@ class BookActivity: FragmentActivity()  {
     }
 
     private fun setData(bookDescription: String){
-        Picasso.get()
+
+        bookImg = Picasso.get()
             .load(intent.extras?.getString("bookImgUrl"))
             .resize(600, 850)
-            .into(book_image)
+        bookImg.into(book_image)
 
         bookImgUrl = intent.extras?.getString("bookImgUrl").toString()
         book_title.text = intent.extras?.getString("bookTitle")

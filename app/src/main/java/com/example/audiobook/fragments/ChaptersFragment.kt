@@ -1,6 +1,6 @@
 package com.example.audiobook.fragments
 
-import ChapterTransfer
+import com.example.audiobook.`interface`.ChapterTransfer
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +9,9 @@ import androidx.fragment.app.Fragment
 import com.example.audiobook.R
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import com.example.audiobook.isPlayed
 import com.example.audiobook.models.Chapter
+import kotlinx.android.synthetic.main.fragment_player.*
 
 
 class ChaptersFragment(private val chapters: ArrayList<Chapter>) : Fragment() {
@@ -44,8 +46,10 @@ class ChaptersFragment(private val chapters: ArrayList<Chapter>) : Fragment() {
         adapter.notifyDataSetChanged()
 
         listChapters.setOnItemClickListener {
-            parent, view, position, id ->
+                parent, view, position, id ->
             (activity as ChapterTransfer).setChapter(position)
+            //isPlayed = true
+            (activity as ChapterTransfer).playAudio("new")
         }
 
         return chapterView

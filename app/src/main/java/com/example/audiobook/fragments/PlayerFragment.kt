@@ -1,36 +1,25 @@
 package com.example.audiobook.fragments
 
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
-import android.media.MediaPlayer
+import com.example.audiobook.`interface`.ChapterTransfer
 import android.os.Bundle
-import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.NotificationCompat
 import androidx.fragment.app.Fragment
-import com.example.audiobook.MediaPlayerService
-import com.example.audiobook.MediaPlayerService.LocalBinder
 import com.example.audiobook.R
-import com.example.audiobook.models.Chapter
+import com.example.audiobook.isPlayed
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_player.*
-import java.io.IOException
+import kotlinx.android.synthetic.main.fragment_player.book_title
 
 
 class PlayerFragment(
-    private val listChapters: ArrayList<Chapter>,
-    private val bookUrl: String?,
+    private val bookImgUrl: String?,
     private val bookTitle: String?,
 ) : Fragment() {
 
-    private lateinit var mpService : MediaPlayerService
-    private var serviceBound = false
-    private var isPlayed = false
-
-    var chaptersId = 0
+    //private var isPlayed = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,36 +29,61 @@ class PlayerFragment(
         return inflater.inflate(R.layout.fragment_player, container, false)
     }
 
+    override fun onResume() {
+        super.onResume()
+        setChapterData()
+        if(isPlayed)
+        {
+            playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp)
+        }
+        else
+        {
+            playBtn.setBackgroundResource(R.drawable.ic_play_black_24dp)
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        chaptersId = if(getLastChapter() != "-1" && getLastChapter() != null)
-            getLastChapter()!!.toInt()
-        else 0
-
         Picasso.get()
-            .load(bookUrl)
+            .load(bookImgUrl)
             .resize(600, 850)
             .into(book_img)
 
         book_title.text = bookTitle
-        createChapter(true)
-        playBtn.setOnClickListener { playAudio() }
+        //createChapter(true)
+        setChapterData()
 
+        playBtn.setOnClickListener {
+            if(!isPlayed)
+            {
+                (activity as ChapterTransfer).playAudio("play")
+                playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp)
+            }
+            else
+            {
+                (activity as ChapterTransfer).playAudio("pause")
+                playBtn.setBackgroundResource(R.drawable.ic_play_black_24dp)
+            }
+        }
 
         nextBtn.setOnClickListener {
-            if(chaptersId < listChapters.size - 1)
+            if((activity as ChapterTransfer).getChapter() < (activity as ChapterTransfer).getSize() - 1)
             {
-                chaptersId++
-                nextAudio()
+                (activity as ChapterTransfer).setChapter((activity as ChapterTransfer).getChapter() + 1)
+                setChapterData()
+                playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp)
+                (activity as ChapterTransfer).playAudio("next")
             }
         }
 
         prevBtn.setOnClickListener {
-            if(chaptersId > 0)
+            if((activity as ChapterTransfer).getChapter() > 0)
             {
-                chaptersId--
-                nextAudio()
+                (activity as ChapterTransfer).setChapter((activity as ChapterTransfer).getChapter() - 1)
+                setChapterData()
+                playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp)
+                (activity as ChapterTransfer).playAudio("prev")
             }
         }
 
@@ -94,55 +108,60 @@ class PlayerFragment(
 //        )
     }
 
-
-    private fun getLastChapter() : String
+    private fun setChapterData()
     {
-        val lastChapter = activity?.getSharedPreferences(
-            "lastChapters",
-            Context.MODE_PRIVATE
-        )
-
-        return lastChapter?.getString(lastChapter.getString(bookUrl,"-1").toString(),"-1").toString()
+        chapter_title.text = (activity as ChapterTransfer).getTittle()
+        remainingTimeLabel.text = (activity as ChapterTransfer).getTime()
     }
 
-    private fun createChapter(firstStart: Boolean = false) {
-        try {
-            //playBtn.isEnabled = false
-            remainingTimeLabel.text = listChapters[chaptersId].chapterTime
-            chapter_title.text = listChapters[chaptersId].chapterTitle
+//    private fun getLastChapter() : String
+//    {
+//        val lastChapter = activity?.getSharedPreferences(
+//            "lastChapters",
+//            Context.MODE_PRIVATE
+//        )
+//
+//        return lastChapter?.getString(lastChapter.getString(bookUrl,"-1").toString(),"-1").toString()
+//    }
 
-//            MediaPlayer().apply {
-//                setAudioAttributes(
-//                    AudioAttributes
-//                        .Builder()
-//                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-//                        .setUsage(AudioAttributes.USAGE_MEDIA)
-//                        .build()
-//                )
-//                setDataSource(listChapters[chaptersId].chapterUrl)
-//                prepareAsync()
-//                stop()
-//                release()
-//            }
-
-            activity
-                ?.getSharedPreferences("lastChapters",Context.MODE_PRIVATE)
-                ?.edit()
-                ?.putString(bookUrl, listChapters[chaptersId].chapterUrl)
-                ?.putString(listChapters[chaptersId].chapterUrl, chaptersId.toString())
-                ?.apply()
-
-            //playBtn.isEnabled = true
-        }
-
-        catch(e: IOException)
-        {
-  //          removeMp()
-        }
-        catch (e: IllegalStateException)
-        {
-  //          removeMp()
-        }
+//    private fun createChapter(firstStart: Boolean = false) {
+//        try {
+//            //playBtn.isEnabled = false
+//            remainingTimeLabel.text = listChapters[chaptersId].chapterTime
+//            chapter_title.text = listChapters[chaptersId].chapterTitle
+//
+////            MediaPlayer().apply {
+////                setAudioAttributes(
+////                    AudioAttributes
+////                        .Builder()
+////                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+////                        .setUsage(AudioAttributes.USAGE_MEDIA)
+////                        .build()
+////                )
+////                setDataSource(listChapters[chaptersId].chapterUrl)
+////                prepareAsync()
+////                stop()
+////                release()
+////            }
+//
+//            activity
+//                ?.getSharedPreferences("lastChapters",Context.MODE_PRIVATE)
+//                ?.edit()
+//                ?.putString(bookUrl, listChapters[chaptersId].chapterUrl)
+//                ?.putString(listChapters[chaptersId].chapterUrl, chaptersId.toString())
+//                ?.apply()
+//
+//            //playBtn.isEnabled = true
+//        }
+//
+//        catch(e: IOException)
+//        {
+//  //          removeMp()
+//        }
+//        catch (e: IllegalStateException)
+//        {
+//  //          removeMp()
+//        }
 
 //        mp.setOnPreparedListener {
 //            positionBar.max = mp.duration
@@ -170,17 +189,17 @@ class PlayerFragment(
 //            }).start()
 //
 //        }
-    }
+//    }
 
 //    @SuppressLint("HandlerLeak")
 //    var handler = object : Handler() {
 //        override fun handleMessage(msg: Message) {
 //            if(positionBar != null){
 //
-//                if((activity as ChapterTransfer).getChapter() != -1)
+//                if((activity as com.example.audiobook.`interface`.ChapterTransfer).getChapter() != -1)
 //                {
-//                    chaptersId = (activity as ChapterTransfer).getChapter() - 1
-//                    (activity as ChapterTransfer).setChapter(-1)
+//                    chaptersId = (activity as com.example.audiobook.`interface`.ChapterTransfer).getChapter() - 1
+//                    (activity as com.example.audiobook.`interface`.ChapterTransfer).setChapter(-1)
 //                    nextBtn.performClick()
 //                }
 //
@@ -227,57 +246,57 @@ class PlayerFragment(
 //        return
 //    }
 
-    private val serviceConnection: ServiceConnection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            val binder = service as LocalBinder
-            mpService = binder.service
-            serviceBound = true
-        }
-
-        override fun onServiceDisconnected(name: ComponentName) {
-            serviceBound = false
-        }
-    }
-
-    private fun playAudio() {
-        //Check is service is active
-        if (!serviceBound)
-        {
-            createChapter()
-            val playerIntent = Intent(this.context, MediaPlayerService::class.java)
-            playerIntent.putExtra("bookUrl", bookUrl)
-            context?.startService(playerIntent)
-            context?.bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE)
-            isPlayed = true
-            playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp)
-        }
-        else
-        {
-            if (isPlayed)
-            {
-                isPlayed = false
-                playBtn.setBackgroundResource(R.drawable.ic_play_black_24dp)
-            }
-            else
-            {
-                isPlayed = true
-                playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp)
-            }
-        }
-    }
-
-    private fun nextAudio()
-    {
-        createChapter()
-        //val broadcastIntent = Intent("com.valdioveliu.valdio.audioplayer.PlayNewAudio")
-        this.context?.sendBroadcast(Intent("com.valdioveliu.valdio.audioplayer.PlayNewAudio"))
-    }
-
-    override fun onSaveInstanceState(savedInstanceState: Bundle) {
-        savedInstanceState.putBoolean("ServiceState", serviceBound)
-        super.onSaveInstanceState(savedInstanceState)
-    }
+//    private val serviceConnection: ServiceConnection = object : ServiceConnection {
+//        override fun onServiceConnected(name: ComponentName, service: IBinder) {
+//            // We've bound to LocalService, cast the IBinder and get LocalService instance
+//            val binder = service as LocalBinder
+//            mpService = binder.service
+//            serviceBound = true
+//        }
+//
+//        override fun onServiceDisconnected(name: ComponentName) {
+//            serviceBound = false
+//        }
+//    }
+//
+//    private fun playAudio() {
+//        //Check is service is active
+//        if (!serviceBound)
+//        {
+//            createChapter()
+//            val playerIntent = Intent(this.context, MediaPlayerService::class.java)
+//            playerIntent.putExtra("bookUrl", bookUrl)
+//            context?.startService(playerIntent)
+//            context?.bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+//            isPlayed = true
+//            playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp)
+//        }
+//        else
+//        {
+//            if (isPlayed)
+//            {
+//                isPlayed = false
+//                playBtn.setBackgroundResource(R.drawable.ic_play_black_24dp)
+//            }
+//            else
+//            {
+//                isPlayed = true
+//                playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp)
+//            }
+//        }
+//    }
+//
+//    private fun nextAudio()
+//    {
+//        createChapter()
+//        //val broadcastIntent = Intent("com.valdioveliu.valdio.audioplayer.PlayNewAudio")
+//        this.context?.sendBroadcast(Intent("com.valdioveliu.valdio.audioplayer.PlayNewAudio"))
+//    }
+//
+//    override fun onSaveInstanceState(savedInstanceState: Bundle) {
+//        savedInstanceState.putBoolean("ServiceState", serviceBound)
+//        super.onSaveInstanceState(savedInstanceState)
+//    }
 
 //    fun onRestoreInstanceState(savedInstanceState: Bundle) {
 //        super.onRestoreInstanceState(savedInstanceState)

@@ -108,7 +108,8 @@ class LibraryFragment : Fragment() {
 //        }
 //    }
 
-    private fun getBooks(type: String): MutableList<String> {
+    private fun getBooks(type: String): MutableList<String>
+    {
         val books = mutableListOf<String>()
         val sharedPref = activity?.getSharedPreferences("condition_book", Context.MODE_PRIVATE)
         val allBooks = sharedPref?.all
