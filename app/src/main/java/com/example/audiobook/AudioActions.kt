@@ -1,0 +1,11 @@
+package com.example.audiobook
+
+class AudioActions {
+    val ACTION_PLAY = "ACTION_PLAY"
+    val ACTION_PAUSE = "ACTION_PAUSE"
+    val ACTION_PREVIOUS = "ACTION_PREVIOUS"
+    val ACTION_NEXT = "ACTION_NEXT"
+    val ACTION_STOP = "ACTION_STOP"
+    val ACTION_PLAY_NEW_AUDIO = "ACTION_PLAY_NEW_AUDIO"
+    val ACTION_SET_DATA = "ACTION_SET_DATA"
+}

@@ -1,17 +1,20 @@
 package com.example.audiobook.fragments
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import com.example.audiobook.`interface`.ChapterTransfer
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.NotificationCompat
 import androidx.fragment.app.Fragment
-import com.example.audiobook.R
-import com.example.audiobook.isPlayed
+import com.example.audiobook.*
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_player.*
 import kotlinx.android.synthetic.main.fragment_player.book_title
+
 
 
 class PlayerFragment(
@@ -20,30 +23,30 @@ class PlayerFragment(
 ) : Fragment() {
 
     //private var isPlayed = false
+    private val audioActions = AudioActions()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
+
         return inflater.inflate(R.layout.fragment_player, container, false)
     }
 
     override fun onResume() {
         super.onResume()
         setChapterData()
-        if(isPlayed)
-        {
+        if (isPlayed) {
             playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp)
-        }
-        else
-        {
+        } else {
             playBtn.setBackgroundResource(R.drawable.ic_play_black_24dp)
         }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        registerAction()
 
         Picasso.get()
             .load(bookImgUrl)
@@ -51,41 +54,34 @@ class PlayerFragment(
             .into(book_img)
 
         book_title.text = bookTitle
-        //createChapter(true)
         setChapterData()
 
         playBtn.setOnClickListener {
-            if(!isPlayed)
-            {
+            if (!isPlayed) {
                 (activity as ChapterTransfer).playAudio("play")
                 playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp)
-            }
-            else
-            {
+            } else {
                 (activity as ChapterTransfer).playAudio("pause")
                 playBtn.setBackgroundResource(R.drawable.ic_play_black_24dp)
             }
         }
 
         nextBtn.setOnClickListener {
-            if((activity as ChapterTransfer).getChapter() < (activity as ChapterTransfer).getSize() - 1)
-            {
-                (activity as ChapterTransfer).setChapter((activity as ChapterTransfer).getChapter() + 1)
-                setChapterData()
+            if (audioIndex < (activity as ChapterTransfer).getSize() - 1) {
                 playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp)
                 (activity as ChapterTransfer).playAudio("next")
+                setChapterData()
             }
         }
 
         prevBtn.setOnClickListener {
-            if((activity as ChapterTransfer).getChapter() > 0)
-            {
-                (activity as ChapterTransfer).setChapter((activity as ChapterTransfer).getChapter() - 1)
-                setChapterData()
+            if (audioIndex > 0) {
                 playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp)
                 (activity as ChapterTransfer).playAudio("prev")
+                setChapterData()
             }
         }
+
 
 //        positionBar.setOnSeekBarChangeListener(
 //            object : SeekBar.OnSeekBarChangeListener {
@@ -108,10 +104,26 @@ class PlayerFragment(
 //        )
     }
 
+    private fun registerAction()
+    {
+        activity?.registerReceiver(setData, IntentFilter(audioActions.ACTION_SET_DATA))
+    }
+
+    private fun unregisterAction()
+    {
+        activity?.unregisterReceiver(setData)
+    }
+
     private fun setChapterData()
     {
         chapter_title.text = (activity as ChapterTransfer).getTittle()
         remainingTimeLabel.text = (activity as ChapterTransfer).getTime()
+    }
+
+    private val setData: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            setChapterData()
+        }
     }
 
 //    private fun getLastChapter() : String
@@ -238,13 +250,12 @@ class PlayerFragment(
 //        lastChapter?.edit()?.putString(bookUrl, chaptersId.toString())?.apply()
 //    }
 
-//    override fun onDestroy() {
-//        removeMp()
-//        super.onStop()
-//        super.onDestroy()
-//
-//        return
-//    }
+    override fun onDestroy() {
+        unregisterAction()
+        super.onDestroy()
+
+        return
+    }
 
 //    private val serviceConnection: ServiceConnection = object : ServiceConnection {
 //        override fun onServiceConnected(name: ComponentName, service: IBinder) {

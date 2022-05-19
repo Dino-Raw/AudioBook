@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -19,7 +20,7 @@ import com.squareup.picasso.RequestCreator
 import kotlinx.android.synthetic.main.activity_book.*
 
 
-class BookActivity: FragmentActivity()  {
+class BookActivity: AppCompatActivity()  {
 
     private lateinit var bookImgUrl : String
     private lateinit var bookImg : RequestCreator
