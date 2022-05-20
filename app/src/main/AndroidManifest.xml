@@ -16,11 +16,14 @@
 		android:supportsRtl="true"
 		android:theme="@style/Theme.AudioBook">
 
+		<receiver
+			android:name=".NotificationReceiver"
+			android:enabled="true" />
+
 		<service
 			android:name=".MediaPlayerService"
 			android:enabled="true"
 			android:exported="false">
-
 		</service>
 
 		<activity

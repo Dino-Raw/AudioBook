@@ -1,6 +1,5 @@
 package com.example.audiobook.fragments
 
-import com.example.audiobook.`interface`.ChapterTransfer
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,12 +8,10 @@ import androidx.fragment.app.Fragment
 import com.example.audiobook.R
 import android.widget.ArrayAdapter
 import android.widget.ListView
-import com.example.audiobook.isPlayed
-import com.example.audiobook.models.Chapter
-import kotlinx.android.synthetic.main.fragment_player.*
+import com.example.audiobook.AudioActivity
 
 
-class ChaptersFragment(private val chapters: ArrayList<Chapter>) : Fragment() {
+class ChaptersFragment() : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -23,10 +20,10 @@ class ChaptersFragment(private val chapters: ArrayList<Chapter>) : Fragment() {
     ): View? {
 
         val chapter = mutableListOf<String>()
-        for(i in 0 until chapters.size)
+        for(i in 0 until AudioActivity.listChapters.size)
         {
             chapter.add(
-                "Название: ${chapters[i].chapterTitle}\nДлительность: ${chapters[i].chapterTime}")
+                "Название: ${ AudioActivity.listChapters[i].chapterTitle}\nДлительность: ${ AudioActivity.listChapters[i].chapterTime}")
         }
 
         val chapterView = inflater.inflate(
@@ -47,9 +44,9 @@ class ChaptersFragment(private val chapters: ArrayList<Chapter>) : Fragment() {
 
         listChapters.setOnItemClickListener {
                 parent, view, position, id ->
-            (activity as ChapterTransfer).setChapter(position)
+            AudioActivity.chapterIndex = position
             //isPlayed = true
-            (activity as ChapterTransfer).playAudio("new")
+            //(activity as ChapterTransfer).playAudio("new")
         }
 
         return chapterView

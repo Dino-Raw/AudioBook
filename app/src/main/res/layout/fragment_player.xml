@@ -66,6 +66,7 @@
 			android:id="@+id/playBtn"
 			android:layout_width="40dp"
 			android:layout_height="40dp"
+			android:enabled="false"
 			android:background="@drawable/ic_play_black_24dp" />
 		<Button
 			android:id="@+id/nextBtn"

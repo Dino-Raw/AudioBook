@@ -1,86 +1,101 @@
 package com.example.audiobook.fragments
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import com.example.audiobook.`interface`.ChapterTransfer
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SeekBar
 import androidx.fragment.app.Fragment
 import com.example.audiobook.*
+import com.example.audiobook.databinding.FragmentPlayerBinding
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_player.*
-import kotlinx.android.synthetic.main.fragment_player.book_title
 
 
+class PlayerFragment() : Fragment() {
+    companion object
+    {
+        //@SuppressLint("StaticFieldLeak")
+        lateinit var binding: FragmentPlayerBinding
+    }
 
-class PlayerFragment(
-    private val bookImgUrl: String?,
-    private val bookTitle: String?,
-) : Fragment() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
 
-    //private var isPlayed = false
-    private val audioActions = AudioActions()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        //binding = FragmentPlayerBinding.bind(view)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-
-        return inflater.inflate(R.layout.fragment_player, container, false)
+        binding = FragmentPlayerBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onResume() {
         super.onResume()
         setChapterData()
-        if (isPlayed) {
+        if (AudioActivity.isPlayed)
+        {
             playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp)
-        } else {
+        } else
+        {
             playBtn.setBackgroundResource(R.drawable.ic_play_black_24dp)
         }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        registerAction()
 
         Picasso.get()
-            .load(bookImgUrl)
+            .load(AudioActivity.bookImgUrl)
             .resize(600, 850)
-            .into(book_img)
+            .into(binding.bookImg)
 
-        book_title.text = bookTitle
+
+        binding.bookTitle.text = AudioActivity.bookTitle
+
         setChapterData()
 
         playBtn.setOnClickListener {
-            if (!isPlayed) {
-                (activity as ChapterTransfer).playAudio("play")
-                playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp)
-            } else {
-                (activity as ChapterTransfer).playAudio("pause")
-                playBtn.setBackgroundResource(R.drawable.ic_play_black_24dp)
+            if (!AudioActivity.isPlayed)
+            {
+                (activity as AudioActivity).playMedia()
+            }
+            else
+            {
+                (activity as AudioActivity).pauseMedia()
             }
         }
 
         nextBtn.setOnClickListener {
-            if (audioIndex < (activity as ChapterTransfer).getSize() - 1) {
-                playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp)
-                (activity as ChapterTransfer).playAudio("next")
+            if (AudioActivity.chapterIndex < AudioActivity.listChapters.size - 1) {
+                (activity as AudioActivity).nextMedia()
                 setChapterData()
             }
         }
 
         prevBtn.setOnClickListener {
-            if (audioIndex > 0) {
-                playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp)
-                (activity as ChapterTransfer).playAudio("prev")
+            if (AudioActivity.chapterIndex > 0) {
+                (activity as AudioActivity).prevMedia()
                 setChapterData()
             }
         }
+
+        binding.positionBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                if(fromUser) AudioActivity.mediaService!!.mp.seekTo(progress)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) = Unit
+            override fun onStopTrackingTouch(seekBar: SeekBar?) = Unit
+
+        })
 
 
 //        positionBar.setOnSeekBarChangeListener(
@@ -104,26 +119,11 @@ class PlayerFragment(
 //        )
     }
 
-    private fun registerAction()
-    {
-        activity?.registerReceiver(setData, IntentFilter(audioActions.ACTION_SET_DATA))
-    }
-
-    private fun unregisterAction()
-    {
-        activity?.unregisterReceiver(setData)
-    }
 
     private fun setChapterData()
     {
-        chapter_title.text = (activity as ChapterTransfer).getTittle()
-        remainingTimeLabel.text = (activity as ChapterTransfer).getTime()
-    }
-
-    private val setData: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            setChapterData()
-        }
+        chapter_title.text = AudioActivity.listChapters[AudioActivity.chapterIndex].chapterTitle
+        remainingTimeLabel.text = AudioActivity.listChapters[AudioActivity.chapterIndex].chapterTime
     }
 
 //    private fun getLastChapter() : String
@@ -248,79 +248,5 @@ class PlayerFragment(
 //        )
 //
 //        lastChapter?.edit()?.putString(bookUrl, chaptersId.toString())?.apply()
-//    }
-
-    override fun onDestroy() {
-        unregisterAction()
-        super.onDestroy()
-
-        return
-    }
-
-//    private val serviceConnection: ServiceConnection = object : ServiceConnection {
-//        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-//            // We've bound to LocalService, cast the IBinder and get LocalService instance
-//            val binder = service as LocalBinder
-//            mpService = binder.service
-//            serviceBound = true
-//        }
-//
-//        override fun onServiceDisconnected(name: ComponentName) {
-//            serviceBound = false
-//        }
-//    }
-//
-//    private fun playAudio() {
-//        //Check is service is active
-//        if (!serviceBound)
-//        {
-//            createChapter()
-//            val playerIntent = Intent(this.context, MediaPlayerService::class.java)
-//            playerIntent.putExtra("bookUrl", bookUrl)
-//            context?.startService(playerIntent)
-//            context?.bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE)
-//            isPlayed = true
-//            playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp)
-//        }
-//        else
-//        {
-//            if (isPlayed)
-//            {
-//                isPlayed = false
-//                playBtn.setBackgroundResource(R.drawable.ic_play_black_24dp)
-//            }
-//            else
-//            {
-//                isPlayed = true
-//                playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp)
-//            }
-//        }
-//    }
-//
-//    private fun nextAudio()
-//    {
-//        createChapter()
-//        //val broadcastIntent = Intent("com.valdioveliu.valdio.audioplayer.PlayNewAudio")
-//        this.context?.sendBroadcast(Intent("com.valdioveliu.valdio.audioplayer.PlayNewAudio"))
-//    }
-//
-//    override fun onSaveInstanceState(savedInstanceState: Bundle) {
-//        savedInstanceState.putBoolean("ServiceState", serviceBound)
-//        super.onSaveInstanceState(savedInstanceState)
-//    }
-
-//    fun onRestoreInstanceState(savedInstanceState: Bundle) {
-//        super.onRestoreInstanceState(savedInstanceState)
-//        serviceBound = savedInstanceState.getBoolean("ServiceState")
-//    }
-
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        if (serviceBound)
-//        {
-//            context?.unbindService(serviceConnection)
-//            //service is active
-//            mpService.stopSelf()
-//        }
 //    }
 }
