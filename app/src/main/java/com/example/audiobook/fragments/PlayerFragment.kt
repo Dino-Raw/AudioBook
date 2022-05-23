@@ -20,6 +20,22 @@ class PlayerFragment() : Fragment() {
         fun getInstance(): PlayerFragment {
             return PlayerFragment()
         }
+
+        fun setChapterData()
+        {
+            binding!!.remainingTimeLabel.text = AudioActivity.listChapters[AudioActivity.chapterIndex].chapterTime
+            binding!!.elapsedTimeLabel.text = AudioActivity.mediaService!!.createTimeLabel(
+                AudioActivity.mediaService!!.mp!!.currentPosition.toLong())
+
+            binding!!.positionBar.max = AudioActivity.mediaService!!.mp!!.duration
+            binding!!.positionBar.progress = AudioActivity.mediaService!!.mp!!.currentPosition
+
+            binding!!.chapterTitle.text = AudioActivity.listChapters[AudioActivity.chapterIndex].chapterTitle
+
+            if(AudioActivity.isPlaying) binding!!.playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp)
+            else binding!!.playBtn.setBackgroundResource(R.drawable.ic_play_black_24dp)
+        }
+
     }
 
     override fun onCreateView(
@@ -34,7 +50,7 @@ class PlayerFragment() : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        setChapterData()
+        if(AudioActivity.mediaService != null) setChapterData()
         if (AudioActivity.isPlaying)
         {
             playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp)
@@ -57,7 +73,7 @@ class PlayerFragment() : Fragment() {
 
         binding!!.bookTitle.text = AudioActivity.bookTitle
 
-        setChapterData()
+        if(AudioActivity.mediaService != null) setChapterData()
 
         playBtn.setOnClickListener {
             if (!AudioActivity.isPlaying)
@@ -92,18 +108,6 @@ class PlayerFragment() : Fragment() {
             override fun onStopTrackingTouch(seekBar: SeekBar?) = Unit
 
         })
-    }
-
-
-    private fun setChapterData()
-    {
-        chapter_title.text = AudioActivity.listChapters[AudioActivity.chapterIndex].chapterTitle
-        //remainingTimeLabel.text = AudioActivity.listChapters[AudioActivity.chapterIndex].chapterTime
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        println("------------------SAVE_INSTANCE--------------------------------------")
     }
 
 //    private fun getLastChapter() : String

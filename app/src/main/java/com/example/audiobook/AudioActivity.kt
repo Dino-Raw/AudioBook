@@ -42,99 +42,16 @@ class AudioActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_audio)
 
+        initLayout()
+        connect()
+
         audioAdapter = PagersAdapter(supportFragmentManager)
         audioAdapter.addFragment(PlayerFragment(), " Плеер ")
         audioAdapter.addFragment(ChaptersFragment(), " Главы ")
         audio_view_pager.adapter = audioAdapter
         audio_tabs.setupWithViewPager(audio_view_pager)
-        initLayout()
-        connect()
-    }
-
-    fun initMediaPlayer()
-    {
-        try {
-            isPlaying = false
-            PlayerFragment.binding!!.playBtn.isEnabled = false
-            if(mediaService!!.mp == null) mediaService!!.mp = MediaPlayer()
-            mediaService!!.mp!!.reset()
-            mediaService!!.mp!!.setOnCompletionListener(mediaService)
-            mediaService!!.mp!!.setOnErrorListener(mediaService)
-            mediaService!!.mp!!.setAudioStreamType(AudioManager.STREAM_MUSIC)
-            mediaService!!.mp!!.setDataSource(listChapters[chapterIndex].chapterUrl)
-            mediaService!!.mp!!.prepareAsync()
-
-            mediaService!!.mp!!.setOnPreparedListener {
-                PlayerFragment.binding!!.playBtn.isEnabled = true
-                //initSeekBar()
-                playMedia()
-            }
-        }
-        catch (e: IOException)
-        {
-            e.printStackTrace()
-            return
-        }
-    }
-
-    private fun initLayout()
-    {
-        when(intent.getStringExtra("class"))
-        {
-            "First" -> {
 
 
-
-                serviceBound = false
-                getBookData()
-            }
-
-            "Now" -> {
-                serviceBound = false
-                // создаёт новый фрагмент, а обращаюсь к старому, чё?????????????
-                // если заново подключиться к сервису, то норм, но всё сбрасывается, чё???????????
-
-                getBookData()
-                setSeekBar()
-            }
-        }
-    }
-
-    fun setSeekBar()
-    {
-        PlayerFragment.binding!!.remainingTimeLabel.text = mediaService!!.createTimeLabel(
-            mediaService!!.mp!!.duration.toLong())
-        PlayerFragment.binding!!.elapsedTimeLabel.text = mediaService!!.createTimeLabel(
-            mediaService!!.mp!!.currentPosition.toLong())
-
-        PlayerFragment.binding!!.positionBar.max = mediaService!!.mp!!.duration
-        PlayerFragment.binding!!.positionBar.progress = mediaService!!.mp!!.currentPosition
-
-    }
-
-    private fun setLayout()
-    {
-        PlayerFragment.binding!!.chapterTitle.text = listChapters[chapterIndex].chapterTitle
-        PlayerFragment.binding!!.remainingTimeLabel.text = listChapters[chapterIndex].chapterTime
-    }
-
-    fun getBookData()
-    {
-        bookImgUrl = intent.extras?.getString("bookImgUrl").toString()
-        bookUrl = intent.extras?.getString("bookUrl").toString()
-        bookTitle = intent.extras?.getString("bookTitle").toString()
-        chapterIndex = getLastChapter()
-        listChapters = MainActivity.listChapters
-    }
-
-    private fun getLastChapter() : Int
-    {
-        val lastChapter = getSharedPreferences(
-            "lastChapters",
-            Context.MODE_PRIVATE
-        )
-
-        return lastChapter?.getString(lastChapter.getString(bookUrl, "-1").toString(),"0")!!.toInt()
     }
 
     private fun connect() {
@@ -167,6 +84,46 @@ class AudioActivity : AppCompatActivity() {
         }
     }
 
+    private fun initLayout()
+    {
+        when(intent.getStringExtra("class"))
+        {
+            "First" -> {
+                serviceBound = false
+                getBookData()
+            }
+
+            "Now" -> {
+                serviceBound = true
+                getBookData()
+            }
+        }
+    }
+
+    private fun getBookData()
+    {
+        bookImgUrl = intent.extras?.getString("bookImgUrl").toString()
+        bookUrl = intent.extras?.getString("bookUrl").toString()
+        bookTitle = intent.extras?.getString("bookTitle").toString()
+        chapterIndex = getLastChapter()
+        listChapters = MainActivity.listChapters
+    }
+
+    private fun getLastChapter() : Int
+    {
+        val lastChapter = getSharedPreferences(
+            "lastChapters",
+            Context.MODE_PRIVATE
+        )
+
+        return lastChapter?.getString(lastChapter.getString(bookUrl, "-1").toString(),"0")!!.toInt()
+    }
+
+    fun initMediaPlayer()
+    {
+        mediaService!!.initMediaPlayer()
+    }
+
     fun playMedia()
     {
         mediaService!!.playMedia()
@@ -186,11 +143,6 @@ class AudioActivity : AppCompatActivity() {
     {
         mediaService!!.prevMedia()
     }
-
-//    fun initMediaPlayer()
-//    {
-//        mediaService!!.initMediaPlayer()
-//    }
 
     fun stopMedia()
     {
