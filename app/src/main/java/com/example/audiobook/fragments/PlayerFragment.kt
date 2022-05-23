@@ -15,32 +15,27 @@ import kotlinx.android.synthetic.main.fragment_player.*
 class PlayerFragment() : Fragment() {
     companion object
     {
-        //@SuppressLint("StaticFieldLeak")
-        lateinit var binding: FragmentPlayerBinding
-    }
+        var binding: FragmentPlayerBinding? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        //binding = FragmentPlayerBinding.bind(view)
+        fun getInstance(): PlayerFragment {
+            return PlayerFragment()
+        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
+        val a = 0
         binding = FragmentPlayerBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding!!.root
     }
 
     override fun onResume() {
         super.onResume()
         setChapterData()
-        if (AudioActivity.isPlayed)
+        if (AudioActivity.isPlaying)
         {
             playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp)
         } else
@@ -52,18 +47,20 @@ class PlayerFragment() : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        if(!AudioActivity.serviceBound) binding!!.playBtn.isEnabled = false
+
         Picasso.get()
             .load(AudioActivity.bookImgUrl)
             .resize(600, 850)
-            .into(binding.bookImg)
+            .into(binding!!.bookImg)
 
 
-        binding.bookTitle.text = AudioActivity.bookTitle
+        binding!!.bookTitle.text = AudioActivity.bookTitle
 
         setChapterData()
 
         playBtn.setOnClickListener {
-            if (!AudioActivity.isPlayed)
+            if (!AudioActivity.isPlaying)
             {
                 (activity as AudioActivity).playMedia()
             }
@@ -87,43 +84,26 @@ class PlayerFragment() : Fragment() {
             }
         }
 
-        binding.positionBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+        binding!!.positionBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                if(fromUser) AudioActivity.mediaService!!.mp.seekTo(progress)
+                if(fromUser) AudioActivity.mediaService!!.mp!!.seekTo(progress)
             }
-
             override fun onStartTrackingTouch(seekBar: SeekBar?) = Unit
             override fun onStopTrackingTouch(seekBar: SeekBar?) = Unit
 
         })
-
-
-//        positionBar.setOnSeekBarChangeListener(
-//            object : SeekBar.OnSeekBarChangeListener {
-//                override fun onProgressChanged(
-//                    seekBar: SeekBar?,
-//                    progress: Int,
-//                    fromUser: Boolean,
-//                ) {
-//                    if (fromUser) {
-//                        mp.seekTo(progress)
-//                    }
-//                }
-//
-//                override fun onStartTrackingTouch(p0: SeekBar?) {
-//                }
-//
-//                override fun onStopTrackingTouch(p0: SeekBar?) {
-//                }
-//            }
-//        )
     }
 
 
     private fun setChapterData()
     {
         chapter_title.text = AudioActivity.listChapters[AudioActivity.chapterIndex].chapterTitle
-        remainingTimeLabel.text = AudioActivity.listChapters[AudioActivity.chapterIndex].chapterTime
+        //remainingTimeLabel.text = AudioActivity.listChapters[AudioActivity.chapterIndex].chapterTime
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        println("------------------SAVE_INSTANCE--------------------------------------")
     }
 
 //    private fun getLastChapter() : String
@@ -175,68 +155,6 @@ class PlayerFragment() : Fragment() {
 //  //          removeMp()
 //        }
 
-//        mp.setOnPreparedListener {
-//            positionBar.max = mp.duration
-//            playBtn.isEnabled = true
-//
-//            if(!firstStart) {
-//                mp.start()
-//                playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp)
-//            }
-//            else{
-//                playBtn.setBackgroundResource(R.drawable.ic_play_black_24dp)
-//            }
-//
-//            // Thread
-//            Thread(Runnable {
-//                while (mp != null) {
-//                    try {
-//                        val msg = Message()
-//                        msg.what = mp.currentPosition
-//                        handler.sendMessage(msg)
-//                        Thread.sleep(1000)
-//                    } catch (e: InterruptedException) {
-//                    }
-//                }
-//            }).start()
-//
-//        }
-//    }
-
-//    @SuppressLint("HandlerLeak")
-//    var handler = object : Handler() {
-//        override fun handleMessage(msg: Message) {
-//            if(positionBar != null){
-//
-//                if((activity as com.example.audiobook.`interface`.ChapterTransfer).getChapter() != -1)
-//                {
-//                    chaptersId = (activity as com.example.audiobook.`interface`.ChapterTransfer).getChapter() - 1
-//                    (activity as com.example.audiobook.`interface`.ChapterTransfer).setChapter(-1)
-//                    nextBtn.performClick()
-//                }
-//
-//                positionBar.progress = msg.what
-//                elapsedTimeLabel.text = createTimeLabel(msg.what)
-//
-//                if(positionBar.max - 600 < msg.what)
-//                {
-//                    nextBtn.performClick()
-//                }
-//            }
-//        }
-//    }
-
-//    fun createTimeLabel(time: Int): String {
-//        var timeLabel = ""
-//        val min = time / 1000 / 60
-//        val sec = time / 1000 % 60
-//
-//        timeLabel = "$min:"
-//        if (sec < 10) timeLabel += "0"
-//        timeLabel += sec
-//
-//        return timeLabel
-//    }
 
 //    private fun removeMp(){
 //        mp.stop()

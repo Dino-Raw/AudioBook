@@ -13,6 +13,13 @@ import com.example.audiobook.AudioActivity
 
 class ChaptersFragment() : Fragment() {
 
+    companion object {
+        fun newInstance(): ChaptersFragment {
+            return ChaptersFragment()
+        }
+
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -44,7 +51,8 @@ class ChaptersFragment() : Fragment() {
 
         listChapters.setOnItemClickListener {
                 parent, view, position, id ->
-            AudioActivity.chapterIndex = position
+            AudioActivity.chapterIndex = position-1
+            (activity as AudioActivity).nextMedia()
             //isPlayed = true
             //(activity as ChapterTransfer).playAudio("new")
         }

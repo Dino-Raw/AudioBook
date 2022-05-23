@@ -1,68 +1,140 @@
 package com.example.audiobook
 
+import android.annotation.SuppressLint
 import android.content.*
 import android.graphics.Bitmap
+import android.media.AudioManager
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.IBinder
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.example.audiobook.MediaPlayerService.LocalBinder
 import com.example.audiobook.adapters.PagersAdapter
+import com.example.audiobook.databinding.FragmentPlayerBinding
 import com.example.audiobook.fragments.ChaptersFragment
 import com.example.audiobook.fragments.PlayerFragment
 import com.example.audiobook.models.Chapter
+import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.activity_audio.*
+import java.io.IOException
+import kotlin.properties.Delegates
 
 
 class AudioActivity : AppCompatActivity() {
-
     companion object {
-        var listChapters: ArrayList<Chapter> = arrayListOf()
+        lateinit var audioAdapter : PagersAdapter
         lateinit var bookUrl : String
         lateinit var bookImgUrl : String
         lateinit var bookTitle : String
         lateinit var bookImg : Bitmap
+        var serviceBound by Delegates.notNull<Boolean>()
 
-        var isPlayed = false
+        var isPlaying = false
         var chapterIndex: Int = 0
-        var serviceBound = false
+        var listChapters: ArrayList<Chapter> = arrayListOf()
         var mediaService : MediaPlayerService? = null
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_audio)
-        val audioAdapter = PagersAdapter(supportFragmentManager)
 
-        getBookData()
-
+        audioAdapter = PagersAdapter(supportFragmentManager)
         audioAdapter.addFragment(PlayerFragment(), " Плеер ")
         audioAdapter.addFragment(ChaptersFragment(), " Главы ")
-
         audio_view_pager.adapter = audioAdapter
         audio_tabs.setupWithViewPager(audio_view_pager)
-
-        serviceBound = savedInstanceState?.getBoolean("ServiceState") ?: false
-
+        initLayout()
         connect()
     }
 
-    private fun getBookData()
+    fun initMediaPlayer()
+    {
+        try {
+            isPlaying = false
+            PlayerFragment.binding!!.playBtn.isEnabled = false
+            if(mediaService!!.mp == null) mediaService!!.mp = MediaPlayer()
+            mediaService!!.mp!!.reset()
+            mediaService!!.mp!!.setOnCompletionListener(mediaService)
+            mediaService!!.mp!!.setOnErrorListener(mediaService)
+            mediaService!!.mp!!.setAudioStreamType(AudioManager.STREAM_MUSIC)
+            mediaService!!.mp!!.setDataSource(listChapters[chapterIndex].chapterUrl)
+            mediaService!!.mp!!.prepareAsync()
+
+            mediaService!!.mp!!.setOnPreparedListener {
+                PlayerFragment.binding!!.playBtn.isEnabled = true
+                //initSeekBar()
+                playMedia()
+            }
+        }
+        catch (e: IOException)
+        {
+            e.printStackTrace()
+            return
+        }
+    }
+
+    private fun initLayout()
+    {
+        when(intent.getStringExtra("class"))
+        {
+            "First" -> {
+
+
+
+                serviceBound = false
+                getBookData()
+            }
+
+            "Now" -> {
+                serviceBound = false
+                // создаёт новый фрагмент, а обращаюсь к старому, чё?????????????
+                // если заново подключиться к сервису, то норм, но всё сбрасывается, чё???????????
+
+                getBookData()
+                setSeekBar()
+            }
+        }
+    }
+
+    fun setSeekBar()
+    {
+        PlayerFragment.binding!!.remainingTimeLabel.text = mediaService!!.createTimeLabel(
+            mediaService!!.mp!!.duration.toLong())
+        PlayerFragment.binding!!.elapsedTimeLabel.text = mediaService!!.createTimeLabel(
+            mediaService!!.mp!!.currentPosition.toLong())
+
+        PlayerFragment.binding!!.positionBar.max = mediaService!!.mp!!.duration
+        PlayerFragment.binding!!.positionBar.progress = mediaService!!.mp!!.currentPosition
+
+    }
+
+    private fun setLayout()
+    {
+        PlayerFragment.binding!!.chapterTitle.text = listChapters[chapterIndex].chapterTitle
+        PlayerFragment.binding!!.remainingTimeLabel.text = listChapters[chapterIndex].chapterTime
+    }
+
+    fun getBookData()
     {
         bookImgUrl = intent.extras?.getString("bookImgUrl").toString()
         bookUrl = intent.extras?.getString("bookUrl").toString()
         bookTitle = intent.extras?.getString("bookTitle").toString()
-        chapterIndex = getLastChapter()!!.toInt()
-        listChapters = intent.extras?.getSerializable("listChapters") as ArrayList<Chapter>
+        chapterIndex = getLastChapter()
+        listChapters = MainActivity.listChapters
     }
 
-    private fun getLastChapter() : String?
+    private fun getLastChapter() : Int
     {
         val lastChapter = getSharedPreferences(
             "lastChapters",
             Context.MODE_PRIVATE
         )
 
-        return lastChapter?.getString(lastChapter.getString(bookUrl, "-1").toString(),"0")
+        return lastChapter?.getString(lastChapter.getString(bookUrl, "-1").toString(),"0")!!.toInt()
     }
 
     private fun connect() {
@@ -83,6 +155,7 @@ class AudioActivity : AppCompatActivity() {
             val binder = service as LocalBinder
             mediaService = binder.service
             initMediaPlayer()
+            mediaService!!.callStateListener()
             serviceBound = true
             mediaService!!.setupSeekBar()
         }
@@ -96,7 +169,7 @@ class AudioActivity : AppCompatActivity() {
 
     fun playMedia()
     {
-        if(mediaService != null) mediaService!!.playMedia()
+        mediaService!!.playMedia()
     }
 
     fun pauseMedia()
@@ -106,36 +179,26 @@ class AudioActivity : AppCompatActivity() {
 
     fun nextMedia()
     {
-        if(mediaService != null) mediaService!!.nextMedia()
+        mediaService!!.nextMedia()
     }
 
     fun prevMedia()
     {
-        if(mediaService != null) mediaService!!.prevMedia()
+        mediaService!!.prevMedia()
     }
 
-    fun initMediaPlayer()
+//    fun initMediaPlayer()
+//    {
+//        mediaService!!.initMediaPlayer()
+//    }
+
+    fun stopMedia()
     {
-        mediaService!!.initMediaPlayer()
+        mediaService!!.mp!!.stop()
+        mediaService!!.mp!!.reset()
     }
 
-    private fun stopMedia()
-    {
-        mediaService!!.mp.stop()
-        mediaService!!.mp.release()
-    }
-
-
-
-    override fun onSaveInstanceState(savedInstanceState: Bundle)
-    {
-        super.onSaveInstanceState(savedInstanceState)
-        savedInstanceState.putBoolean("ServiceState", serviceBound)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle)
-    {
-        super.onRestoreInstanceState(savedInstanceState)
-        serviceBound = savedInstanceState.getBoolean("ServiceState")
+    override fun onDestroy() {
+        super.onDestroy()
     }
 }

@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -48,11 +49,12 @@ class BookActivity: AppCompatActivity()  {
 
         book_player.setOnClickListener{
             val intent = Intent(this, AudioActivity::class.java)
-
+            MainActivity.listChapters = listChapters
             intent.putExtra("bookTitle", book_title.text.toString())
             intent.putExtra("bookImgUrl", bookImgUrl)
             intent.putExtra("bookUrl", bookUrl)
-            intent.putExtra("listChapters", listChapters)
+            //intent.putExtra("listChapters", listChapters)
+            intent.putExtra("class", "First")
 
             startActivity(intent)
         }
@@ -143,4 +145,18 @@ class BookActivity: AppCompatActivity()  {
         book_time.text = intent.extras?.getString("bookTime")
         book_description.text = bookDescription
     }
+
+    override fun onBackPressed() {
+        //super.onBackPressed()
+        println("--------------------ON_BACK_PRESSED-----------------------------")
+        finish()
+    }
+
+    override fun onDestroy() {
+        finish()
+        println("--------------------ON_DESTROY-----------------------------")
+        super.onDestroy()
+    }
+
+
 }

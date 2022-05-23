@@ -3,6 +3,8 @@ package com.example.audiobook.adapters
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.fragment.app.FragmentStatePagerAdapter
+import com.example.audiobook.fragments.PlayerFragment
 
 class PagersAdapter(manager: FragmentManager) : FragmentPagerAdapter(manager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT){
 
@@ -20,7 +22,8 @@ class PagersAdapter(manager: FragmentManager) : FragmentPagerAdapter(manager, BE
 
     override fun getPageTitle(position: Int): CharSequence = titleList[position]
 
-    override fun getItemPosition(`object`: Any): Int {
+    override fun getItemPosition(`object`: Any): Int
+    {
         return POSITION_NONE
     }
 }
