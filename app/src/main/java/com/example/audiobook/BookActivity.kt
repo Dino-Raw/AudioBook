@@ -50,11 +50,24 @@ class BookActivity: AppCompatActivity()  {
         book_player.setOnClickListener{
             val intent = Intent(this, AudioActivity::class.java)
             MainActivity.listChapters = listChapters
-            intent.putExtra("bookTitle", book_title.text.toString())
-            intent.putExtra("bookImgUrl", bookImgUrl)
-            intent.putExtra("bookUrl", bookUrl)
-            //intent.putExtra("listChapters", listChapters)
-            intent.putExtra("class", "First")
+
+            if(AudioActivity.bookUrl != null &&
+                AudioActivity.bookUrl == bookUrl &&
+                AudioActivity.mediaService != null)
+            {
+                intent.putExtra("class", "Now")
+                intent.putExtra("bookTitle", AudioActivity.bookTitle)
+                intent.putExtra("bookImgUrl", AudioActivity.bookImgUrl)
+                intent.putExtra("bookUrl", AudioActivity.bookUrl)
+            }
+
+            else
+            {
+                intent.putExtra("class", "First")
+                intent.putExtra("bookTitle", book_title.text.toString())
+                intent.putExtra("bookImgUrl", bookImgUrl)
+                intent.putExtra("bookUrl", bookUrl)
+            }
 
             startActivity(intent)
         }

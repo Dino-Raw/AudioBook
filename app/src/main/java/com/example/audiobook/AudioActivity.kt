@@ -25,7 +25,7 @@ import kotlin.properties.Delegates
 class AudioActivity : AppCompatActivity() {
     companion object {
         lateinit var audioAdapter : PagersAdapter
-        lateinit var bookUrl : String
+        var bookUrl : String? = null
         lateinit var bookImgUrl : String
         lateinit var bookTitle : String
         lateinit var bookImg : Bitmap
