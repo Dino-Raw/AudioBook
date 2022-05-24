@@ -21,13 +21,12 @@ class LibraryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        println("-----------CREATE_VIEW_LIBRARY--------------------")
 
-        val libraryView = inflater.inflate(R.layout.fragment_library, container, false)
+        return inflater.inflate(R.layout.fragment_library, container, false)
+    }
 
-        val libraryPager: ViewPager = libraryView.findViewById(R.id.library_view_pager)
-
-        val libraryTabs: TabLayout = libraryView.findViewById(R.id.library_tabs)
+    override fun onResume() {
+        super.onResume()
         val libraryAdapter = PagersAdapter(childFragmentManager)
 
         libraryAdapter.addFragment(newInstance("Слушаю"), "Слушаю")
@@ -35,45 +34,19 @@ class LibraryFragment : Fragment() {
         libraryAdapter.addFragment(newInstance("Прослушано"), "Прослушано")
         libraryAdapter.addFragment(newInstance("Брошено"), "Брошено")
 
-        libraryPager.adapter = libraryAdapter
-        libraryTabs.setupWithViewPager(libraryPager)
-
-        return libraryView
-    }
-
-    override fun onResume() {
-        super.onResume()
-        println("-----------RESUME_LIBRARY--------------------")
-        super.onDetach()
-        super.onAttach(requireContext())
+        library_view_pager.adapter = libraryAdapter
+        library_tabs.setupWithViewPager(library_view_pager)
     }
 
     private fun newInstance(condition: String): MyBooksFragment
     {
         val arguments = Bundle()
-        val fragment = MyBooksFragment()
 
         arguments.putString("condition", condition)
-        arguments.putStringArrayList(condition, getBooks(condition))
 
+        val fragment = MyBooksFragment()
         fragment.arguments = arguments
 
         return fragment
     }
-
-    private fun getBooks(type: String): ArrayList<String>
-    {
-        val books = arrayListOf<String>()
-        val sharedPref = activity?.getSharedPreferences("condition_book", Context.MODE_PRIVATE)
-        val allBooks = sharedPref!!.all
-
-        if (allBooks != null)
-            for ((key, value) in allBooks)
-                if(value == type)
-                    books.add(key)
-
-        return books
-    }
-
-
 }
