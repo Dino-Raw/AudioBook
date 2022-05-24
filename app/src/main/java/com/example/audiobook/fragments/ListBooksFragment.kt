@@ -13,21 +13,24 @@ import com.example.audiobook.adapters.ListBooksAdapter
 import com.example.audiobook.viewmodels.ListBooksViewModel
 import kotlinx.android.synthetic.main.fragment_list_books.*
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.activity_main.*
 import java.lang.NullPointerException
 
 
 class ListBooksFragment(private var url: String = "", private var type: String = "") : Fragment() {
+    companion object {
+        var isVisibleSearchFragment = false
+    }
 
     private lateinit var listBooksAdapter: ListBooksAdapter
     private val viewModel by lazy {
-        ViewModelProvider(this).get(ListBooksViewModel::class.java) }
+        ViewModelProvider(this)[ListBooksViewModel::class.java]
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         var pageLast = 0
-        var pageNum = 2
+        var pageNum = 0
 
         var previousTotal = 0
         val visibleThreshold = 5
@@ -41,6 +44,8 @@ class ListBooksFragment(private var url: String = "", private var type: String =
             type = arguments?.getString("type").toString()
             url = arguments?.getString("url").toString()
         }
+
+        if(type == "search" || type == "genre") isVisibleSearchFragment = true
 
         listBooksAdapter = ListBooksAdapter(type)
 
@@ -64,20 +69,27 @@ class ListBooksFragment(private var url: String = "", private var type: String =
             e.printStackTrace()
         }
         list_books.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int)
+            {
                 super.onScrolled(recyclerView, dx, dy)
+
                 visibleItemCount = list_books.childCount
                 totalItemCount = layoutManager.itemCount
                 firstVisibleItem = layoutManager.findFirstVisibleItemPosition()
-                if (loading) {
-                    if (totalItemCount > previousTotal) {
+
+                if (loading)
+                {
+                    if (totalItemCount > previousTotal)
+                    {
                         loading = false
                         previousTotal = totalItemCount
                     }
                 }
-                if (!loading && totalItemCount - visibleItemCount
-                    <= firstVisibleItem + visibleThreshold && pageNum <= pageLast
-                ) {
+                if (!loading &&
+                    totalItemCount - visibleItemCount <= firstVisibleItem + visibleThreshold &&
+                    pageNum <= pageLast
+                )
+                {
                     if(type == "search")
                     {
                         viewModel.getListBooks("$url&page=$pageNum", type)
@@ -113,5 +125,10 @@ class ListBooksFragment(private var url: String = "", private var type: String =
         savedInstanceState: Bundle?,
     ): View? {
         return inflater.inflate(R.layout.fragment_list_books, container, false)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        isVisibleSearchFragment = false
     }
 }

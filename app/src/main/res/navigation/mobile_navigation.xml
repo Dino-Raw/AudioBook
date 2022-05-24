@@ -21,9 +21,6 @@
 		<argument
 			android:name="bookLink"
 			app:argType="string" />
-		<action
-			android:id="@+id/action_navigation_search_to_listBooksFragment"
-			app:destination="@id/listBooksFragment" />
 	</fragment>
 
 	<fragment
@@ -31,12 +28,5 @@
 		android:name="com.example.audiobook.fragments.LibraryFragment"
 		android:label="@string/title_library"
 		tools:layout="@layout/fragment_library" >
-	</fragment>
-
-	<fragment
-		android:id="@+id/listBooksFragment"
-		android:name="com.example.audiobook.fragments.ListBooksFragment"
-		android:label="fragment_list_books"
-		tools:layout="@layout/fragment_list_books" >
 	</fragment>
 </navigation>

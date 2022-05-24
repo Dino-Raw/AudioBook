@@ -1,11 +1,13 @@
 package com.example.audiobook
 
 import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.audiobook.databinding.ActivityMainBinding
+import com.example.audiobook.fragments.GenreFragment
+import com.example.audiobook.fragments.ListBooksFragment
+import com.example.audiobook.fragments.SearchFragment
 import com.example.audiobook.models.Chapter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.android.synthetic.main.activity_main.*
@@ -26,6 +28,7 @@ class MainActivity : AppCompatActivity(){
 
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
         nav_view.setupWithNavController(navController)
+        SearchFragment.childFragment = GenreFragment()
     }
 
     // очистка плеера
@@ -49,6 +52,14 @@ class MainActivity : AppCompatActivity(){
 
     // выход из приложения
     override fun onBackPressed() {
+        if(ListBooksFragment.isVisibleSearchFragment)
+        {
+            SearchFragment.childFragment = GenreFragment()
+            ListBooksFragment.isVisibleSearchFragment = false
+            findNavController(R.id.nav_host_fragment_activity_main).navigate(R.id.navigation_search)
+            return
+        }
+
         val builder = MaterialAlertDialogBuilder(this)
         builder
             .setTitle("Выйти из приложения?")

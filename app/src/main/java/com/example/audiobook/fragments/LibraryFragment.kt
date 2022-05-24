@@ -44,6 +44,8 @@ class LibraryFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         println("-----------RESUME_LIBRARY--------------------")
+        super.onDetach()
+        super.onAttach(requireContext())
     }
 
     private fun newInstance(condition: String): MyBooksFragment
@@ -72,5 +74,6 @@ class LibraryFragment : Fragment() {
 
         return books
     }
+
 
 }

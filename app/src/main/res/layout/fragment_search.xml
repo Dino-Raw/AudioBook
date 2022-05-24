@@ -8,39 +8,11 @@
 	android:orientation="vertical"
 	tools:context=".fragments.SearchFragment">
 
-	<LinearLayout
-		android:id="@+id/idLinear"
+	<FrameLayout
+		android:id="@+id/child_fragment_container"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_gravity="top"
-		android:orientation="horizontal">
+		android:layout_height="match_parent">
 
-		<EditText
-			android:id="@+id/editTextSearch"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_weight="1"/>
-
-		<Button
-			android:id="@+id/buttonSearch"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="Найти"/>
-	</LinearLayout>
-
-	<ScrollView
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:fillViewport="true">
-
-		<ListView
-			android:id="@+id/list_genre"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:orientation="vertical">
-
-		</ListView>
-
-	</ScrollView>
+	</FrameLayout>
 
 </LinearLayout>
