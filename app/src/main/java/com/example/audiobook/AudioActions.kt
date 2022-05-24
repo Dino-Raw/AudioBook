@@ -12,9 +12,7 @@ class AudioActions : Application() {
         const val ACTION_PREVIOUS = "ACTION_PREVIOUS"
         const val ACTION_NEXT = "ACTION_NEXT"
         const val ACTION_STOP = "ACTION_STOP"
-        const val ACTION_NEW_AUDIO = "ACTION_NEW_AUDIO"
-        const val ACTION_SET_DATA = "ACTION_SET_DATA"
         const val NOTIFICATION_ID = 101
-        const val CHANNEL_ID = "foreground_channel_id4"
+        const val CHANNEL_ID = "foreground_channel_id5"
     }
 }

@@ -17,10 +17,6 @@ class PlayerFragment() : Fragment() {
     {
         var binding: FragmentPlayerBinding? = null
 
-        fun getInstance(): PlayerFragment {
-            return PlayerFragment()
-        }
-
         fun setChapterData()
         {
             binding!!.remainingTimeLabel.text = AudioActivity.listChapters[AudioActivity.chapterIndex].chapterTime
@@ -50,6 +46,7 @@ class PlayerFragment() : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        binding!!.root.visibility = View.VISIBLE
         if(AudioActivity.mediaService != null) setChapterData()
         if (AudioActivity.isPlaying)
         {
@@ -102,73 +99,15 @@ class PlayerFragment() : Fragment() {
 
         binding!!.positionBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                if(fromUser) AudioActivity.mediaService!!.mp!!.seekTo(progress)
+                if(fromUser)
+                {
+                    AudioActivity.mediaService!!.mp!!.seekTo(progress)
+                    AudioActivity.mediaService!!.buildNotification()
+                }
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) = Unit
             override fun onStopTrackingTouch(seekBar: SeekBar?) = Unit
 
         })
     }
-
-//    private fun getLastChapter() : String
-//    {
-//        val lastChapter = activity?.getSharedPreferences(
-//            "lastChapters",
-//            Context.MODE_PRIVATE
-//        )
-//
-//        return lastChapter?.getString(lastChapter.getString(bookUrl,"-1").toString(),"-1").toString()
-//    }
-
-//    private fun createChapter(firstStart: Boolean = false) {
-//        try {
-//            //playBtn.isEnabled = false
-//            remainingTimeLabel.text = listChapters[chaptersId].chapterTime
-//            chapter_title.text = listChapters[chaptersId].chapterTitle
-//
-////            MediaPlayer().apply {
-////                setAudioAttributes(
-////                    AudioAttributes
-////                        .Builder()
-////                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-////                        .setUsage(AudioAttributes.USAGE_MEDIA)
-////                        .build()
-////                )
-////                setDataSource(listChapters[chaptersId].chapterUrl)
-////                prepareAsync()
-////                stop()
-////                release()
-////            }
-//
-//            activity
-//                ?.getSharedPreferences("lastChapters",Context.MODE_PRIVATE)
-//                ?.edit()
-//                ?.putString(bookUrl, listChapters[chaptersId].chapterUrl)
-//                ?.putString(listChapters[chaptersId].chapterUrl, chaptersId.toString())
-//                ?.apply()
-//
-//            //playBtn.isEnabled = true
-//        }
-//
-//        catch(e: IOException)
-//        {
-//  //          removeMp()
-//        }
-//        catch (e: IllegalStateException)
-//        {
-//  //          removeMp()
-//        }
-
-
-//    private fun removeMp(){
-//        mp.stop()
-//        mp.release()
-//
-//        val lastChapter = activity?.getSharedPreferences(
-//            "lastChapters",
-//            Context.MODE_PRIVATE
-//        )
-//
-//        lastChapter?.edit()?.putString(bookUrl, chaptersId.toString())?.apply()
-//    }
 }

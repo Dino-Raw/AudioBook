@@ -12,7 +12,6 @@ import com.google.android.material.tabs.TabLayout
 
 
 class HomeFragment : Fragment() {
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -25,20 +24,9 @@ class HomeFragment : Fragment() {
 
         val homeAdapter = PagersAdapter(childFragmentManager)
 
-        homeAdapter.addFragment(
-            ListBooksFragment("new/", "home"),
-            " Новинки "
-        )
-
-        homeAdapter.addFragment(
-            ListBooksFragment("popular/?w=month", "home"),
-            " Популярное "
-        )
-
-        homeAdapter.addFragment(
-            ListBooksFragment("rating/?w=month", "home"),
-            " Рейтинг "
-        )
+        homeAdapter.addFragment(ListBooksFragment("new/", "home"), " Новинки ")
+        homeAdapter.addFragment(ListBooksFragment("popular/?w=month", "home"), " Популярное ")
+        homeAdapter.addFragment(ListBooksFragment("rating/?w=month", "home"), " Рейтинг ")
 
         homePager.adapter = homeAdapter
         homeTabs.setupWithViewPager(homePager)

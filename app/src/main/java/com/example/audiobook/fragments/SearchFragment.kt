@@ -25,6 +25,11 @@ class SearchFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
+        // fragment_search состоит из 2 fragment:
+        // создать fragment_genre
+        // добавить fragment_list_books
+
+
         val searchView = inflater.inflate(R.layout.fragment_search, container, false)
 
         val genresData = mutableListOf<String>(

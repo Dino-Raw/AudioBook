@@ -96,9 +96,7 @@ class BookActivity: AppCompatActivity()  {
                 }
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                // write code to perform some action
-            }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
         }
     }
 
@@ -115,22 +113,22 @@ class BookActivity: AppCompatActivity()  {
 
         booksList?.edit()?.putString(intent.extras?.getString("bookUrl"), condition)?.apply()
 
-
         if(condition == "Не прослушано")
         {
             booksData?.edit()?.clear()?.apply()
             return
         }
 
-        booksData
-            ?.edit()
-            ?.putString("bookTitle", intent.extras?.getString("bookTitle").toString())
-            ?.putString("bookImgUrl", intent.extras?.getString("bookImgUrl"))
-            ?.putString("bookGenre", intent.extras?.getString("bookGenre").toString())
-            ?.putString("bookAuthor", intent.extras?.getString("bookAuthor").toString())
-            ?.putString("bookReader", intent.extras?.getString("bookReader").toString())
-            ?.putString("bookTime", intent.extras?.getString("bookTime").toString())
-            ?.apply()
+        if(booksData.all.isEmpty())
+            booksData
+                ?.edit()
+                ?.putString("bookTitle", intent.extras?.getString("bookTitle").toString())
+                ?.putString("bookImgUrl", intent.extras?.getString("bookImgUrl"))
+                ?.putString("bookGenre", intent.extras?.getString("bookGenre").toString())
+                ?.putString("bookAuthor", intent.extras?.getString("bookAuthor").toString())
+                ?.putString("bookReader", intent.extras?.getString("bookReader").toString())
+                ?.putString("bookTime", intent.extras?.getString("bookTime").toString())
+                ?.apply()
     }
 
     private fun loadCondition(): String? {
@@ -158,18 +156,4 @@ class BookActivity: AppCompatActivity()  {
         book_time.text = intent.extras?.getString("bookTime")
         book_description.text = bookDescription
     }
-
-    override fun onBackPressed() {
-        //super.onBackPressed()
-        println("--------------------ON_BACK_PRESSED-----------------------------")
-        finish()
-    }
-
-    override fun onDestroy() {
-        finish()
-        println("--------------------ON_DESTROY-----------------------------")
-        super.onDestroy()
-    }
-
-
 }

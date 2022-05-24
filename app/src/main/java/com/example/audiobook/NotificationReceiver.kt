@@ -3,8 +3,11 @@ package com.example.audiobook
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.view.View
+import androidx.core.content.ContextCompat.startActivity
 import com.example.audiobook.fragments.NowPlayingFragment
 import com.example.audiobook.fragments.PlayerFragment
+import kotlin.coroutines.coroutineContext
 
 // реализация действий уведомления
 class NotificationReceiver : BroadcastReceiver() {
@@ -47,7 +50,8 @@ class NotificationReceiver : BroadcastReceiver() {
 
     private fun prevMedia()
     {
-        if (AudioActivity.chapterIndex > 0) {
+        if (AudioActivity.chapterIndex > 0)
+        {
             AudioActivity.chapterIndex--
             NowPlayingFragment.binding.chapterTitleNp.text = AudioActivity.listChapters[AudioActivity.chapterIndex].chapterTitle
             AudioActivity.mediaService!!.initMediaPlayer()
@@ -56,13 +60,11 @@ class NotificationReceiver : BroadcastReceiver() {
 
     private fun stopMedia()
     {
-        //AudioActivity.mediaService!!.stopMedia()
-        AudioActivity.mediaService!!.mp!!.release()
+        AudioActivity.mediaService!!.pauseMedia()
+        //AudioActivity.mediaService!!.removeNotification()
         AudioActivity.mediaService!!.stopForeground(true)
-        AudioActivity.mediaService!!.removeNotification()
-        AudioActivity.mediaService = null
-        AudioActivity.serviceBound = false
         AudioActivity.isPlaying = false
         PlayerFragment.binding!!.playBtn.setBackgroundResource(R.drawable.ic_play_black_24dp)
+        NowPlayingFragment.binding.root.visibility = View.INVISIBLE
     }
 }

@@ -40,7 +40,6 @@ class NowPlayingFragment : Fragment() {
         super.onResume()
         if(AudioActivity.mediaService != null)
         {
-            binding.root.visibility = View.VISIBLE
             binding.chapterTitleNp.isSelected = true
             binding.chapterTitleNp.text =
                 AudioActivity.listChapters[AudioActivity.chapterIndex].chapterTitle
@@ -58,7 +57,8 @@ class NowPlayingFragment : Fragment() {
 
     private fun resumeMedia()
     {
-        if(AudioActivity.mediaService != null) {
+        if(AudioActivity.mediaService != null)
+        {
             val intent = Intent(requireActivity(), AudioActivity::class.java)
 
             intent.putExtra("class", "Now")

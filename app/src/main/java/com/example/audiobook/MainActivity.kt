@@ -28,12 +28,16 @@ class MainActivity : AppCompatActivity(){
         nav_view.setupWithNavController(navController)
     }
 
+    // очистка плеера
     override fun onDestroy() {
         super.onDestroy()
         if(AudioActivity.mediaService != null)
         {
-            AudioActivity.mediaService!!.stopForeground(true)
+            AudioActivity.mediaService!!.removeAudioFocus()
+            AudioActivity.mediaService!!.removeCallStateListener()
+            AudioActivity.mediaService!!.unregisterBecomingNoisyReceiver()
             AudioActivity.mediaService!!.removeNotification()
+            AudioActivity.mediaService!!.stopForeground(true)
             if(AudioActivity.mediaService!!.mp!!.isPlaying)
             {
                 AudioActivity.mediaService!!.mp!!.release()

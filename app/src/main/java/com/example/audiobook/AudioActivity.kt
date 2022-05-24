@@ -1,24 +1,16 @@
 package com.example.audiobook
 
-import android.annotation.SuppressLint
 import android.content.*
 import android.graphics.Bitmap
-import android.media.AudioManager
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.IBinder
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import com.example.audiobook.MediaPlayerService.LocalBinder
 import com.example.audiobook.adapters.PagersAdapter
-import com.example.audiobook.databinding.FragmentPlayerBinding
 import com.example.audiobook.fragments.ChaptersFragment
 import com.example.audiobook.fragments.PlayerFragment
 import com.example.audiobook.models.Chapter
-import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.activity_audio.*
-import java.io.IOException
 import kotlin.properties.Delegates
 
 
@@ -35,23 +27,23 @@ class AudioActivity : AppCompatActivity() {
         var chapterIndex: Int = 0
         var listChapters: ArrayList<Chapter> = arrayListOf()
         var mediaService : MediaPlayerService? = null
-
+        var isVisible = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_audio)
 
-        initLayout()
+        checkClass()
+        getBookData()
         connect()
 
+        isVisible = true
         audioAdapter = PagersAdapter(supportFragmentManager)
         audioAdapter.addFragment(PlayerFragment(), " Плеер ")
         audioAdapter.addFragment(ChaptersFragment(), " Главы ")
         audio_view_pager.adapter = audioAdapter
         audio_tabs.setupWithViewPager(audio_view_pager)
-
-
     }
 
     private fun connect() {
@@ -72,7 +64,9 @@ class AudioActivity : AppCompatActivity() {
             val binder = service as LocalBinder
             mediaService = binder.service
             initMediaPlayer()
-            mediaService!!.callStateListener()
+            mediaService!!.initCallStateListener()
+            mediaService!!.initAudioManager()
+            mediaService!!.registerBecomingNoisyReceiver()
             serviceBound = true
             mediaService!!.setupSeekBar()
         }
@@ -84,18 +78,17 @@ class AudioActivity : AppCompatActivity() {
         }
     }
 
-    private fun initLayout()
+    private fun checkClass()
     {
         when(intent.getStringExtra("class"))
         {
             "First" -> {
                 serviceBound = false
-                getBookData()
             }
 
             "Now" -> {
+                if(isVisible) finish()
                 serviceBound = true
-                getBookData()
             }
         }
     }
@@ -152,5 +145,6 @@ class AudioActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        isVisible = false
     }
 }
