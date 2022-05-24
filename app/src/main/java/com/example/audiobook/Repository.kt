@@ -29,7 +29,7 @@ class Repository {
         }
     }
 
-    fun getListBooks(searchUrl: String, type: String): MutableList<Book>? {
+    fun getListBooks(searchUrl: String, type: String): MutableList<Book> {
         val listBooks = mutableListOf<Book>()
 
         try{

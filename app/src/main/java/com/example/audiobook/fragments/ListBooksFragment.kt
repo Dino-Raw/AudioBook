@@ -1,5 +1,6 @@
 package com.example.audiobook.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,24 +21,34 @@ import kotlin.properties.Delegates
 class ListBooksFragment(private var url: String = "", private var type: String = "") : Fragment() {
 
     companion object {
-        var isVisibly by Delegates.notNull<Boolean>()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        isVisibly = true
+        var isVisibly = false
     }
 
     private lateinit var listBooksAdapter: ListBooksAdapter
-    private val viewModel by lazy {
-        ViewModelProvider(this).get(ListBooksViewModel::class.java) }
+    private val viewModel by lazy { ViewModelProvider(this)[ListBooksViewModel::class.java] }
+
+    override fun onResume() {
+        super.onResume()
+    }
+
+    override fun onStop() {
+        super.onStop()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         var pageLast = 0
         var pageNum = 0
-
         var previousTotal = 0
         val visibleThreshold = 5
         var firstVisibleItem: Int
@@ -49,6 +60,11 @@ class ListBooksFragment(private var url: String = "", private var type: String =
         {
             type = arguments?.getString("type").toString()
             url = arguments?.getString("url").toString()
+        }
+
+        if(type == "genre" || type == "search") {
+            isVisibly = true
+            SearchFragment.isVisibly = true
         }
 
         listBooksAdapter = ListBooksAdapter(type)
@@ -72,11 +88,11 @@ class ListBooksFragment(private var url: String = "", private var type: String =
         {
             e.printStackTrace()
         }
+
         list_books.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int)
             {
                 super.onScrolled(recyclerView, dx, dy)
-
                 visibleItemCount = list_books.childCount
                 totalItemCount = layoutManager.itemCount
                 firstVisibleItem = layoutManager.findFirstVisibleItemPosition()
@@ -95,28 +111,22 @@ class ListBooksFragment(private var url: String = "", private var type: String =
                 )
                 {
                     if(type == "search")
-                    {
                         viewModel.getListBooks("$url&page=$pageNum", type)
                             .observe(viewLifecycleOwner, Observer {})
-                    }
                     else if(type == "home")
                     {
-                        if(url == "new/") {
+                        if(url == "new/")
                             viewModel.getListBooks("$url?page=$pageNum", type)
                                 .observe(viewLifecycleOwner, Observer {})
-                        }
                         else
-                        {
                             viewModel.getListBooks("$url&page=$pageNum", type)
                                 .observe(viewLifecycleOwner, Observer {})
-                        }
                     }
                     else if(type == "genre")
-                    {
                         viewModel.getListBooks(url.replace("?", "${pageNum}/?"), type)
                             .observe(viewLifecycleOwner, Observer {})
-                    }
-                    pageNum++
+
+                    if(pageNum < pageLast) pageNum++
                     loading = true
                 }
             }
@@ -133,6 +143,6 @@ class ListBooksFragment(private var url: String = "", private var type: String =
 
     override fun onDestroy() {
         super.onDestroy()
-        isVisibly = false
+        //isVisibly = false
     }
 }

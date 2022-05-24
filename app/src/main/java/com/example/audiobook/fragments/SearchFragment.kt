@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.navigation.findNavController
 import com.example.audiobook.R
 import kotlin.properties.Delegates
 
@@ -16,12 +17,7 @@ class SearchFragment : Fragment() {
         lateinit var transaction: FragmentTransaction
         lateinit var childFragment: Fragment
 
-        var isVisibly by Delegates.notNull<Boolean>()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        isVisibly = true
+        var isVisibly =  false
     }
 
     override fun onCreateView(
@@ -32,19 +28,16 @@ class SearchFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_search, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
+    override fun onAttach(context: Context)
+    {
         transaction = childFragmentManager.beginTransaction()
         transaction.replace(R.id.child_fragment_container, childFragment).commit()
+
+        super.onAttach(context)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         isVisibly = false
     }
-
 }

@@ -13,6 +13,7 @@ import com.example.audiobook.R
 
 
 class GenreFragment : Fragment() {
+    //lateinit var url : String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -85,13 +86,29 @@ class GenreFragment : Fragment() {
                 21 -> url = "genre/jumor-satira/popular/?period=alltime"
             }
 
+            val bundle = Bundle()
+
+            bundle.putString("type", "genre")
+            bundle.putString("url", url)
+
             SearchFragment.childFragment = ListBooksFragment(url, "genre")
+            SearchFragment.childFragment.arguments = bundle
+
             refresh()
         }
 
         buttonSearch.setOnClickListener{
             url = "search/?q=${textSearch.text.toString().replace(" ", "%20")}"
+
+
+            val bundle = Bundle()
+
+            bundle.putString("type", "genre")
+            bundle.putString("url", "url")
+
             SearchFragment.childFragment = ListBooksFragment(url, "search")
+            SearchFragment.childFragment.arguments = bundle
+
             refresh()
         }
 
