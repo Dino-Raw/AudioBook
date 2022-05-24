@@ -8,12 +8,20 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.example.audiobook.R
+import kotlin.properties.Delegates
 
 
 class SearchFragment : Fragment() {
     companion object {
         lateinit var transaction: FragmentTransaction
         lateinit var childFragment: Fragment
+
+        var isVisibly by Delegates.notNull<Boolean>()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        isVisibly = true
     }
 
     override fun onCreateView(
@@ -32,6 +40,11 @@ class SearchFragment : Fragment() {
         super.onAttach(context)
         transaction = childFragmentManager.beginTransaction()
         transaction.replace(R.id.child_fragment_container, childFragment).commit()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        isVisibly = false
     }
 
 }

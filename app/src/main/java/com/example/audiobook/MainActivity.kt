@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.audiobook.AudioActivity.Companion.isVisible
 import com.example.audiobook.databinding.ActivityMainBinding
 import com.example.audiobook.fragments.GenreFragment
 import com.example.audiobook.fragments.ListBooksFragment
@@ -52,10 +53,10 @@ class MainActivity : AppCompatActivity(){
 
     // выход из приложения
     override fun onBackPressed() {
-        if(ListBooksFragment.isVisibleSearchFragment)
+        if(ListBooksFragment.isVisibly && SearchFragment.isVisibly)
         {
             SearchFragment.childFragment = GenreFragment()
-            ListBooksFragment.isVisibleSearchFragment = false
+            ListBooksFragment.isVisibly = false
             findNavController(R.id.nav_host_fragment_activity_main).navigate(R.id.navigation_search)
             return
         }

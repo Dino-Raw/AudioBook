@@ -14,11 +14,18 @@ import com.example.audiobook.viewmodels.ListBooksViewModel
 import kotlinx.android.synthetic.main.fragment_list_books.*
 import androidx.recyclerview.widget.RecyclerView
 import java.lang.NullPointerException
+import kotlin.properties.Delegates
 
 
 class ListBooksFragment(private var url: String = "", private var type: String = "") : Fragment() {
+
     companion object {
-        var isVisibleSearchFragment = false
+        var isVisibly by Delegates.notNull<Boolean>()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        isVisibly = true
     }
 
     private lateinit var listBooksAdapter: ListBooksAdapter
@@ -43,8 +50,6 @@ class ListBooksFragment(private var url: String = "", private var type: String =
             type = arguments?.getString("type").toString()
             url = arguments?.getString("url").toString()
         }
-
-        if(type == "search" || type == "genre") isVisibleSearchFragment = true
 
         listBooksAdapter = ListBooksAdapter(type)
 
@@ -128,6 +133,6 @@ class ListBooksFragment(private var url: String = "", private var type: String =
 
     override fun onDestroy() {
         super.onDestroy()
-        isVisibleSearchFragment = false
+        isVisibly = false
     }
 }
