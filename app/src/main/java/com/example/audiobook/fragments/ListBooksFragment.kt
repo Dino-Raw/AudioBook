@@ -27,30 +27,12 @@ class ListBooksFragment(private var url: String = "", private var type: String =
     private lateinit var listBooksAdapter: ListBooksAdapter
     private val viewModel by lazy { ViewModelProvider(this)[ListBooksViewModel::class.java] }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
-    override fun onStop() {
-        super.onStop()
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         var pageLast = 0
-        var pageNum = 0
+        var pageNum = 1
         var previousTotal = 0
-        val visibleThreshold = 5
+        val visibleThreshold = 10
         var firstVisibleItem: Int
         var visibleItemCount: Int
         var totalItemCount: Int
@@ -76,7 +58,9 @@ class ListBooksFragment(private var url: String = "", private var type: String =
 
         viewModel.getListBooks(url, type).observe(viewLifecycleOwner, Observer {
             try {
+                pageNum++
                 listBooksAdapter.add(it)
+
             }
             catch (e: NullPointerException)
             {
@@ -95,7 +79,6 @@ class ListBooksFragment(private var url: String = "", private var type: String =
                 e.printStackTrace()
             }
         })
-
 
         list_books.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int)
@@ -134,7 +117,7 @@ class ListBooksFragment(private var url: String = "", private var type: String =
                         viewModel.getListBooks(url.replace("?", "${pageNum}/?"), type)
                             .observe(viewLifecycleOwner, Observer {})
 
-                    if(pageNum < pageLast) pageNum++
+
                     loading = true
                 }
             }
@@ -151,6 +134,5 @@ class ListBooksFragment(private var url: String = "", private var type: String =
 
     override fun onDestroy() {
         super.onDestroy()
-        //isVisibly = false
     }
 }
