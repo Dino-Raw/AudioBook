@@ -73,21 +73,29 @@ class ListBooksFragment(private var url: String = "", private var type: String =
 
         list_books.layoutManager = layoutManager
         list_books.adapter = listBooksAdapter
-        try
-        {
-            viewModel.getListBooks(url, type).observe(viewLifecycleOwner, Observer {
 
+        viewModel.getListBooks(url, type).observe(viewLifecycleOwner, Observer {
+            try {
                 listBooksAdapter.add(it)
-            })
+            }
+            catch (e: NullPointerException)
+            {
+                e.printStackTrace()
+            }
+        })
 
-            viewModel.getLastPage(url).observe(viewLifecycleOwner, Observer {
+        viewModel.getLastPage(url).observe(viewLifecycleOwner, Observer {
+            try
+            {
                 pageLast = it
-            })
-        }
-        catch (e: NullPointerException)
-        {
-            e.printStackTrace()
-        }
+            }
+            catch (e: NullPointerException)
+            {
+                pageLast = 0
+                e.printStackTrace()
+            }
+        })
+
 
         list_books.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int)
