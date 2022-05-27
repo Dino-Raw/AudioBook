@@ -1,14 +1,13 @@
 package com.example.audiobook.fragments
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.example.audiobook.AudioActivity
-import com.example.audiobook.BookActivity
 import com.example.audiobook.R
 import com.example.audiobook.databinding.FragmentNowPlayingBinding
 
@@ -61,13 +60,16 @@ class NowPlayingFragment : Fragment() {
         {
             val intent = Intent(requireActivity(), AudioActivity::class.java)
 
-            intent.putExtra("class", "Now")
+            intent.putExtra("class", "NowPlayingFragment")
             intent.putExtra("bookTitle", AudioActivity.bookTitle)
             intent.putExtra("bookImgUrl", AudioActivity.bookImgUrl)
             intent.putExtra("bookUrl", AudioActivity.bookUrl)
 
-            startActivity(intent)
+            val options = ActivityOptions.makeCustomAnimation(
+                requireActivity(),
+                R.anim.slide_up, R.anim.no_animation)
 
+            startActivity(intent, options.toBundle())
         }
     }
 

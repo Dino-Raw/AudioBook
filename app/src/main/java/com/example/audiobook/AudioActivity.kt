@@ -1,8 +1,8 @@
 package com.example.audiobook
 
+import android.app.ActivityOptions
 import android.content.*
 import android.graphics.Bitmap
-import android.media.PlaybackParams
 import android.os.Bundle
 import android.os.IBinder
 import androidx.appcompat.app.AppCompatActivity
@@ -86,8 +86,7 @@ class AudioActivity : AppCompatActivity() {
             "First" -> {
                 serviceBound = false
             }
-
-            "Now" -> {
+            else ->{
                 if(isVisible) finish()
                 serviceBound = true
             }
@@ -166,5 +165,12 @@ class AudioActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         isVisible = false
+
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if(intent.getStringExtra("class") == "NowPlayingFragment")
+            overridePendingTransition(R.anim.no_animation, R.anim.slide_down)
     }
 }
