@@ -62,7 +62,6 @@ class Repository {
                         .text()
                         .replace("Все жанры ", "")
                 }
-                else -> println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
             }
 
             for(i in 0 until book.size)

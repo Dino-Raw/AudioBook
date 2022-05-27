@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.fragment.app.Fragment
 import com.example.audiobook.*
-import com.example.audiobook.databinding.FragmentPlayerBinding
 import com.squareup.picasso.Picasso
+import com.example.audiobook.databinding.FragmentPlayerBinding
 import kotlinx.android.synthetic.main.fragment_player.*
 
 
@@ -27,7 +27,7 @@ class PlayerFragment() : Fragment() {
             binding!!.positionBar.progress = AudioActivity.mediaService!!.mp!!.currentPosition
 
             binding!!.chapterTitle.text = AudioActivity.listChapters[AudioActivity.chapterIndex].chapterTitle
-
+            binding!!.speedTxt.text = AudioActivity.mediaService!!.speed.toString()
             if(AudioActivity.isPlaying) binding!!.playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp)
             else binding!!.playBtn.setBackgroundResource(R.drawable.ic_play_black_24dp)
         }
@@ -95,6 +95,14 @@ class PlayerFragment() : Fragment() {
                 (activity as AudioActivity).prevMedia()
                 setChapterData()
             }
+        }
+
+        lessSpeedBtn.setOnClickListener {
+            (activity as AudioActivity).lessPlaybackSpeed()
+        }
+
+        higherSpeedBtn.setOnClickListener {
+            (activity as AudioActivity).highPlaybackSpeed()
         }
 
         binding!!.positionBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{

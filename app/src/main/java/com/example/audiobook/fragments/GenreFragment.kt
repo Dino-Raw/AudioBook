@@ -62,28 +62,28 @@ class GenreFragment : Fragment() {
                 parent, view, position, id ->
             when(position)
             {
-                0 -> url = "genre/fantastika/popular/?period=alltime"
-                1 -> url = "genre/detektivy-trillery/popular/?period=alltime"
-                2 -> url = "genre/audiospektakli/popular/?period=alltime"
-                3 -> url = "genre/biznes/popular/?period=alltime"
-                4 -> url = "genre/biografii-memuary/popular/?period=alltime"
-                5 -> url = "genre/dlja-detejj/popular/?period=alltime"
-                6 -> url = "genre/istorija/popular/?period=alltime"
-                7 -> url = "genre/klassika/popular/?period=alltime"
-                8 -> url = "genre/medicina-zdorove/popular/?period=alltime"
-                9 -> url = "genre/na-inostrannykh-jazykakh/popular/?period=alltime"
-                10 -> url = "genre/nauchno-populjarnoe/popular/?period=alltime"
-                11 -> url = "genre/obuchenie/popular/?period=alltime"
-                12 -> url = "genre/poehzija/popular/?period=alltime"
-                13 -> url = "genre/prikljuchenija/popular/?period=alltime"
-                14 -> url = "genre/psikhologija-filosofija/popular/?period=alltime"
-                15 -> url = "genre/raznoe/popular/?period=alltime"
-                16 -> url = "genre/ranobeh/popular/?period=alltime"
-                17 -> url = "genre/religija/popular/?period=alltime"
-                18 -> url = "genre/roman-proza/popular/?period=alltime"
-                19 -> url = "genre/uzhasy-mistika/popular/?period=alltime"
-                20 -> url = "genre/ehzoterika/popular/?period=alltime"
-                21 -> url = "genre/jumor-satira/popular/?period=alltime"
+                0 -> url = "genre/fantastika/popular/?period=alltime&page="
+                1 -> url = "genre/detektivy-trillery/popular/?period=alltime&page="
+                2 -> url = "genre/audiospektakli/popular/?period=alltime&page="
+                3 -> url = "genre/biznes/popular/?period=alltime&page="
+                4 -> url = "genre/biografii-memuary/popular/?period=alltime&page="
+                5 -> url = "genre/dlja-detejj/popular/?period=alltime&page="
+                6 -> url = "genre/istorija/popular/?period=alltime&page="
+                7 -> url = "genre/klassika/popular/?period=alltime&page="
+                8 -> url = "genre/medicina-zdorove/popular/?period=alltime&page="
+                9 -> url = "genre/na-inostrannykh-jazykakh/popular/?period=alltime&page="
+                10 -> url = "genre/nauchno-populjarnoe/popular/?period=alltime&page="
+                11 -> url = "genre/obuchenie/popular/?period=alltime&page="
+                12 -> url = "genre/poehzija/popular/?period=alltime&page="
+                13 -> url = "genre/prikljuchenija/popular/?period=alltime&page="
+                14 -> url = "genre/psikhologija-filosofija/popular/?period=alltime&page="
+                15 -> url = "genre/raznoe/popular/?period=alltime&page="
+                16 -> url = "genre/ranobeh/popular/?period=alltime&page="
+                17 -> url = "genre/religija/popular/?period=alltime&page="
+                18 -> url = "genre/roman-proza/popular/?period=alltime&page="
+                19 -> url = "genre/uzhasy-mistika/popular/?period=alltime&page="
+                20 -> url = "genre/ehzoterika/popular/?period=alltime&page="
+                21 -> url = "genre/jumor-satira/popular/?period=alltime&page="
             }
 
             val bundle = Bundle()
@@ -98,13 +98,12 @@ class GenreFragment : Fragment() {
         }
 
         buttonSearch.setOnClickListener{
-            url = "search/?q=${textSearch.text.toString().replace(" ", "%20")}"
-
+            url = "search/?q=${textSearch.text.toString().replace(" ", "%20")}&page="
 
             val bundle = Bundle()
 
             bundle.putString("type", "genre")
-            bundle.putString("url", "url")
+            bundle.putString("url", url)
 
             SearchFragment.childFragment = ListBooksFragment(url, "search")
             SearchFragment.childFragment.arguments = bundle

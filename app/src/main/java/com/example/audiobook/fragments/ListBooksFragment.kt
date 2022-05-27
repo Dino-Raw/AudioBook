@@ -23,16 +23,17 @@ class ListBooksFragment(private var url: String = "", private var type: String =
     companion object {
         var isVisibly = false
     }
+    var pageNum = 1
 
     private lateinit var listBooksAdapter: ListBooksAdapter
     private val viewModel by lazy { ViewModelProvider(this)[ListBooksViewModel::class.java] }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var pageLast = 0
-        var pageNum = 1
+        var pageLast = 1
+
         var previousTotal = 0
-        val visibleThreshold = 10
+        val visibleThreshold = 5
         var firstVisibleItem: Int
         var visibleItemCount: Int
         var totalItemCount: Int
@@ -43,6 +44,10 @@ class ListBooksFragment(private var url: String = "", private var type: String =
             type = arguments?.getString("type").toString()
             url = arguments?.getString("url").toString()
         }
+
+        println("---------------------------URL------------------------------")
+        println(url)
+        println("---------------------------URL------------------------------")
 
         if(type == "genre" || type == "search") {
             isVisibly = true
@@ -56,11 +61,9 @@ class ListBooksFragment(private var url: String = "", private var type: String =
         list_books.layoutManager = layoutManager
         list_books.adapter = listBooksAdapter
 
-        viewModel.getListBooks(url, type).observe(viewLifecycleOwner, Observer {
+        viewModel.getListBooks("$url$pageNum", type).observe(viewLifecycleOwner, Observer {
             try {
-                pageNum++
                 listBooksAdapter.add(it)
-
             }
             catch (e: NullPointerException)
             {
@@ -101,27 +104,16 @@ class ListBooksFragment(private var url: String = "", private var type: String =
                     pageNum <= pageLast
                 )
                 {
-                    if(type == "search")
-                        viewModel.getListBooks("$url&page=$pageNum", type)
-                            .observe(viewLifecycleOwner, Observer {})
-                    else if(type == "home")
-                    {
-                        if(url == "new/")
-                            viewModel.getListBooks("$url?page=$pageNum", type)
-                                .observe(viewLifecycleOwner, Observer {})
-                        else
-                            viewModel.getListBooks("$url&page=$pageNum", type)
-                                .observe(viewLifecycleOwner, Observer {})
-                    }
-                    else if(type == "genre")
-                        viewModel.getListBooks(url.replace("?", "${pageNum}/?"), type)
-                            .observe(viewLifecycleOwner, Observer {})
-
-
+                    viewModel.getListBooks("$url${++pageNum}", type)
+                        .observe(viewLifecycleOwner, Observer {})
                     loading = true
                 }
             }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
     }
 
     override fun onCreateView(

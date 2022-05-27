@@ -2,6 +2,7 @@ package com.example.audiobook
 
 import android.content.*
 import android.graphics.Bitmap
+import android.media.PlaybackParams
 import android.os.Bundle
 import android.os.IBinder
 import androidx.appcompat.app.AppCompatActivity
@@ -110,6 +111,25 @@ class AudioActivity : AppCompatActivity() {
         )
 
         return lastChapter?.getString(lastChapter.getString(bookUrl, "-1").toString(),"0")!!.toInt()
+    }
+
+    fun highPlaybackSpeed()
+    {
+        mediaService!!.speed += 0.25F
+        mediaService!!.setPlaybackSpeed()
+        PlayerFragment.binding!!.speedTxt.text = mediaService!!.speed.toString()
+        mediaService!!.buildNotification()
+    }
+
+    fun lessPlaybackSpeed()
+    {
+        if(mediaService!!.mp!!.playbackParams.speed > 0.25F)
+        {
+            mediaService!!.speed -= 0.25F
+            mediaService!!.setPlaybackSpeed()
+            PlayerFragment.binding!!.speedTxt.text = mediaService!!.speed.toString()
+            mediaService!!.buildNotification()
+        }
     }
 
     fun initMediaPlayer()
