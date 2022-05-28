@@ -24,7 +24,6 @@ class ListBooksFragment(private var url: String = "", private var type: String =
         var isVisibly = false
     }
 
-
     private lateinit var listBooksAdapter: ListBooksAdapter
     private val viewModel by lazy { ViewModelProvider(this)[ListBooksViewModel::class.java] }
 
@@ -113,21 +112,11 @@ class ListBooksFragment(private var url: String = "", private var type: String =
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
         return inflater.inflate(R.layout.fragment_list_books, container, false)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        println("---------------------------DESTROY------------------------------")
-
     }
 }

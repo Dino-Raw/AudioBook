@@ -102,7 +102,7 @@ class GenreFragment : Fragment() {
 
             val bundle = Bundle()
 
-            bundle.putString("type", "genre")
+            bundle.putString("type", "search")
             bundle.putString("url", url)
 
             SearchFragment.childFragment = ListBooksFragment(url, "search")

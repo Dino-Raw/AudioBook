@@ -34,6 +34,4 @@ class ListBooksAdapter(private val type: String) : RecyclerView.Adapter<ListBook
         this.listBooks.addAll(list)
         notifyDataSetChanged()
     }
-
-
 }
