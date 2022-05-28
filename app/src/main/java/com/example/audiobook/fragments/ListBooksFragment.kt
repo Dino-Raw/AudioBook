@@ -23,7 +23,7 @@ class ListBooksFragment(private var url: String = "", private var type: String =
     companion object {
         var isVisibly = false
     }
-    var pageNum = 1
+
 
     private lateinit var listBooksAdapter: ListBooksAdapter
     private val viewModel by lazy { ViewModelProvider(this)[ListBooksViewModel::class.java] }
@@ -31,23 +31,19 @@ class ListBooksFragment(private var url: String = "", private var type: String =
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         var pageLast = 1
-
+        var pageNum = 1
         var previousTotal = 0
-        val visibleThreshold = 5
+        val visibleThreshold = 10
         var firstVisibleItem: Int
         var visibleItemCount: Int
         var totalItemCount: Int
-        var loading = true
+        var loading = false
 
         if (url == "" && type == "")
         {
             type = arguments?.getString("type").toString()
             url = arguments?.getString("url").toString()
         }
-
-        println("---------------------------URL------------------------------")
-        println(url)
-        println("---------------------------URL------------------------------")
 
         if(type == "genre" || type == "search") {
             isVisibly = true
@@ -61,9 +57,11 @@ class ListBooksFragment(private var url: String = "", private var type: String =
         list_books.layoutManager = layoutManager
         list_books.adapter = listBooksAdapter
 
-        viewModel.getListBooks("$url$pageNum", type).observe(viewLifecycleOwner, Observer {
-            try {
-                listBooksAdapter.add(it)
+        viewModel.getListBooks("$url${pageNum}", type).observe(viewLifecycleOwner, Observer {
+            try
+            {
+                if(pageNum <= 1) listBooksAdapter.set(it)
+                else listBooksAdapter.add(it)
             }
             catch (e: NullPointerException)
             {
@@ -96,18 +94,21 @@ class ListBooksFragment(private var url: String = "", private var type: String =
                     if (totalItemCount > previousTotal)
                     {
                         loading = false
+                        pageNum++
                         previousTotal = totalItemCount
                     }
                 }
                 if (!loading &&
                     totalItemCount - visibleItemCount <= firstVisibleItem + visibleThreshold &&
                     pageNum <= pageLast
+
                 )
                 {
-                    viewModel.getListBooks("$url${++pageNum}", type)
+                    viewModel.getListBooks("$url${pageNum}", type)
                         .observe(viewLifecycleOwner, Observer {})
                     loading = true
                 }
+
             }
         })
     }
@@ -126,5 +127,7 @@ class ListBooksFragment(private var url: String = "", private var type: String =
 
     override fun onDestroy() {
         super.onDestroy()
+        println("---------------------------DESTROY------------------------------")
+
     }
 }
