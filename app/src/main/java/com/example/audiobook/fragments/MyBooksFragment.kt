@@ -51,15 +51,16 @@ class MyBooksFragment(): Fragment() {
                 if(value == condition)
                 {
                     val sharedPref = activity?.getSharedPreferences(key.replace("/", "$"), Context.MODE_PRIVATE)
-                    val imgUrl = sharedPref?.getString("bookImgUrl", "bookImgUrl").toString()
-                    val bookTitle = sharedPref?.getString("bookTitle","bookTitle").toString()
-                    val bookGenre = sharedPref?.getString("bookGenre","bookGenre").toString()
-                    val bookAuthor = sharedPref?.getString("bookAuthor","bookAuthor").toString()
-                    val bookReader = sharedPref?.getString("bookReader","bookReader").toString()
-                    val bookTime = sharedPref?.getString("bookTime","bookTime").toString()
+                    val imgUrl = sharedPref?.getString("bookImgUrl", "").toString()
+                    val bookTitle = sharedPref?.getString("bookTitle", "").toString()
+                    val bookGenre = sharedPref?.getString("bookGenre", "").toString()
+                    val bookAuthor = sharedPref?.getString("bookAuthor", "").toString()
+                    val bookReader = sharedPref?.getString("bookReader", "").toString()
+                    val bookTime = sharedPref?.getString("bookTime", "").toString()
+                    val bookSource = sharedPref?.getString("bookSource", "").toString()
+                    val bookDescription = sharedPref?.getString("bookDescription", "").toString()
 
-                    listBooks.add(Book(imgUrl, key.replace("$", "/"), bookTitle, bookGenre, bookAuthor, bookReader, bookTime))
-
+                    listBooks.add(Book(imgUrl, key.replace("$", "/"), bookTitle, bookGenre, bookAuthor, bookReader, bookTime, bookDescription, bookSource))
                 }
         return listBooks
     }

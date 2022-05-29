@@ -4,11 +4,10 @@ data class Book(
             val imgUrl: String = "",
             val bookUrl: String = "",
             val bookTitle: String = "",
-            //val bookUrlGenre: String = "",
             val bookGenre: String = "",
-            //val bookUrlAuthor: String = "",
             val bookAuthor: String = "",
-            //val bookUrlReader: String = "",
             val bookReader: String = "",
-            val bookTime: String = ""
+            val bookTime: String = "",
+            val bookDescription: String = "",
+            val bookSource: String = ""
            )

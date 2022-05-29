@@ -13,6 +13,7 @@ class ListBooksViewModel : ViewModel(){
     private var chapters: MutableLiveData<ArrayList<Chapter>> = MutableLiveData()
     private var lastPage: MutableLiveData<Int> = MutableLiveData()
     private var description: MutableLiveData<String> = MutableLiveData()
+    private var source: MutableLiveData<String> = MutableLiveData()
     private val repository = Repository()
 
     fun getLastPage(url: String): MutableLiveData<Int>
@@ -45,5 +46,13 @@ class ListBooksViewModel : ViewModel(){
             description.postValue(repository.getDescription(url))
         }
         return description
+    }
+
+    fun getSource(url: String): MutableLiveData<String>
+    {
+        viewModelScope.launch(IO) {
+            source.postValue(repository.getSource(url))
+        }
+        return source
     }
 }

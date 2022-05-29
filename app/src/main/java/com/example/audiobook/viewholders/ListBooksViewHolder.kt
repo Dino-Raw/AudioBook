@@ -17,6 +17,8 @@ class ListBooksViewHolder(itemView: View, type: String) : RecyclerView.ViewHolde
     private var imgUrl: ImageView = itemView.row_img
     private var bookImgUrl: String = ""
     private var bookUrl = ""
+    private var bookDescription = ""
+    private var bookSource = ""
     private var bookTitle: TextView = itemView.row_title
     private var bookGenre: TextView = itemView.row_genre
     private var bookAuthor: TextView = itemView.row_author
@@ -34,6 +36,8 @@ class ListBooksViewHolder(itemView: View, type: String) : RecyclerView.ViewHolde
             intent.putExtra("bookReader", bookReader.text.toString())
             intent.putExtra("bookTime", bookTime.text.toString())
             intent.putExtra("bookImgUrl", bookImgUrl)
+            intent.putExtra("bookDescription", bookDescription)
+            intent.putExtra("bookSource", bookSource)
 
             itemView.context.startActivity(intent)
         }
@@ -48,6 +52,8 @@ class ListBooksViewHolder(itemView: View, type: String) : RecyclerView.ViewHolde
         bookTime.text = books.bookTime
         bookUrl = books.bookUrl
         bookImgUrl = books.imgUrl
+        bookDescription = books.bookDescription
+        bookSource = books.bookSource
 
         Picasso.get()
             .load(books.imgUrl)

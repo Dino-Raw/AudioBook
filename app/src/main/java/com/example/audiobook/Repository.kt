@@ -222,4 +222,26 @@ class Repository {
         }
         return description
     }
+
+    fun getSource(url: String): String?
+    {
+        var source = ""
+        try{
+            source = Jsoup
+                .connect(url)
+                .get()
+                .select("div.info_block.book_info_block")
+                .select("div.book_info_line")
+                .next()
+                .next()
+                .select("a").attr("href")
+        }
+        catch(e: IOException)
+        {
+            e.printStackTrace()
+            return url
+        }
+        if(source == "") return url
+        return source
+    }
 }

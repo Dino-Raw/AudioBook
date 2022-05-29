@@ -24,10 +24,12 @@ import kotlinx.android.synthetic.main.activity_book.*
 class BookActivity: AppCompatActivity()  {
 
     private lateinit var bookImgUrl : String
+    private lateinit var bookDescription : String
+    private lateinit var bookSource : String
     private lateinit var bookImg : RequestCreator
 
     private val viewModel by lazy {
-        ViewModelProvider(this).get(ListBooksViewModel::class.java)
+        ViewModelProvider(this)[ListBooksViewModel::class.java]
     }
 
     private var listChapters = arrayListOf<Chapter>()
@@ -44,8 +46,16 @@ class BookActivity: AppCompatActivity()  {
         })
 
         viewModel.getDescription(bookUrl).observe(this, Observer {
-            setData(it)
+            bookDescription = it
+            if(intent.extras?.getString("bookDescription") == "") book_description.text = bookDescription
         })
+
+        viewModel.getSource(bookUrl).observe(this, Observer {
+            bookSource = it
+            if(intent.extras?.getString("bookSource") == "") book_source.text = bookSource
+        })
+
+        setData()
 
         book_player.setOnClickListener{
             val intent = Intent(this, AudioActivity::class.java)
@@ -128,6 +138,8 @@ class BookActivity: AppCompatActivity()  {
                 ?.putString("bookAuthor", intent.extras?.getString("bookAuthor").toString())
                 ?.putString("bookReader", intent.extras?.getString("bookReader").toString())
                 ?.putString("bookTime", intent.extras?.getString("bookTime").toString())
+                ?.putString("bookSource", bookSource)
+                ?.putString("bookDescription", bookDescription)
                 ?.apply()
     }
 
@@ -141,7 +153,7 @@ class BookActivity: AppCompatActivity()  {
             "Не прослушано")
     }
 
-    private fun setData(bookDescription: String){
+    private fun setData(){
 
         bookImg = Picasso.get()
             .load(intent.extras?.getString("bookImgUrl"))
@@ -154,6 +166,7 @@ class BookActivity: AppCompatActivity()  {
         book_author.text = intent.extras?.getString("bookAuthor")
         book_reader.text = intent.extras?.getString("bookReader")
         book_time.text = intent.extras?.getString("bookTime")
-        book_description.text = bookDescription
+        book_source.text = intent.extras?.getString("bookSource")
+        book_description.text = intent.extras?.getString("bookDescription")
     }
 }
