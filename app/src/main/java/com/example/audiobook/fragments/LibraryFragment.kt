@@ -30,7 +30,7 @@ class LibraryFragment : Fragment() {
         val libraryAdapter = PagersAdapter(childFragmentManager)
 
         libraryAdapter.addFragment(newInstance("Слушаю"), "Слушаю")
-        libraryAdapter.addFragment(newInstance("Буду слушать"), "Буду слушать")
+        libraryAdapter.addFragment(newInstance("Отложено"), "Отложено")
         libraryAdapter.addFragment(newInstance("Прослушано"), "Прослушано")
         libraryAdapter.addFragment(newInstance("Брошено"), "Брошено")
 

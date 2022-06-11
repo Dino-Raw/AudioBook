@@ -25,7 +25,8 @@ class ListBooksFragment(private var url: String = "", private var type: String =
     }
 
     private lateinit var listBooksAdapter: ListBooksAdapter
-    private val viewModel by lazy { ViewModelProvider(this)[ListBooksViewModel::class.java] }
+    private val viewModel by lazy {
+        ViewModelProvider(this)[ListBooksViewModel::class.java] }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

@@ -26,15 +26,30 @@ class NotificationReceiver : BroadcastReceiver() {
     private fun playMedia()
     {
         AudioActivity.mediaService!!.playMedia()
-        PlayerFragment.binding!!.playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp)
-        NowPlayingFragment.binding.playPauseBtnNP.setBackgroundResource(R.drawable.ic_pause_black_24dp)
+
+        PlayerFragment
+            .binding!!
+            .playBtn
+            .setBackgroundResource(R.drawable.ic_pause_black_24dp)
+
+        NowPlayingFragment
+            .binding
+            .playPauseBtnNP
+            .setBackgroundResource(R.drawable.ic_pause_black_24dp)
     }
 
     private fun pauseMedia()
     {
         AudioActivity.mediaService!!.pauseMedia()
-        PlayerFragment.binding!!.playBtn.setBackgroundResource(R.drawable.ic_play_black_24dp)
-        NowPlayingFragment.binding.playPauseBtnNP.setBackgroundResource(R.drawable.ic_play_black_24dp)
+        PlayerFragment
+            .binding!!
+            .playBtn
+            .setBackgroundResource(R.drawable.ic_play_black_24dp)
+
+        NowPlayingFragment
+            .binding
+            .playPauseBtnNP
+            .setBackgroundResource(R.drawable.ic_play_black_24dp)
     }
 
     private fun nextMedia()
@@ -43,7 +58,10 @@ class NotificationReceiver : BroadcastReceiver() {
         if (AudioActivity.chapterIndex < AudioActivity.listChapters.size - 1)
         {
             AudioActivity.chapterIndex++
-            NowPlayingFragment.binding.chapterTitleNp.text = AudioActivity.listChapters[AudioActivity.chapterIndex].chapterTitle
+
+            NowPlayingFragment.binding.chapterTitleNp.text =
+                AudioActivity.listChapters[AudioActivity.chapterIndex].chapterTitle
+
             AudioActivity.mediaService!!.initMediaPlayer()
         }
     }
@@ -53,7 +71,10 @@ class NotificationReceiver : BroadcastReceiver() {
         if (AudioActivity.chapterIndex > 0)
         {
             AudioActivity.chapterIndex--
-            NowPlayingFragment.binding.chapterTitleNp.text = AudioActivity.listChapters[AudioActivity.chapterIndex].chapterTitle
+
+            NowPlayingFragment.binding.chapterTitleNp.text =
+                AudioActivity.listChapters[AudioActivity.chapterIndex].chapterTitle
+
             AudioActivity.mediaService!!.initMediaPlayer()
         }
     }
@@ -61,7 +82,6 @@ class NotificationReceiver : BroadcastReceiver() {
     private fun stopMedia()
     {
         AudioActivity.mediaService!!.pauseMedia()
-        //AudioActivity.mediaService!!.removeNotification()
         AudioActivity.mediaService!!.stopForeground(true)
         AudioActivity.isPlaying = false
         PlayerFragment.binding!!.playBtn.setBackgroundResource(R.drawable.ic_play_black_24dp)

@@ -24,9 +24,14 @@ class HomeFragment : Fragment() {
 
         val homeAdapter = PagersAdapter(childFragmentManager)
 
-        homeAdapter.addFragment(ListBooksFragment("new/?page=", "home"), " Новинки ")
-        homeAdapter.addFragment(ListBooksFragment("popular/?w=month&page=", "home"), " Популярное ")
-        homeAdapter.addFragment(ListBooksFragment("rating/?w=month&page=", "home"), " Рейтинг ")
+        homeAdapter.addFragment(
+            ListBooksFragment("new/?page=", "home"), " Новинки ")
+
+        homeAdapter.addFragment(
+            ListBooksFragment("popular/?w=month&page=", "home"), " Популярное ")
+
+        homeAdapter.addFragment(
+            ListBooksFragment("rating/?w=month&page=", "home"), " Рейтинг ")
 
         homePager.adapter = homeAdapter
         homeTabs.setupWithViewPager(homePager)

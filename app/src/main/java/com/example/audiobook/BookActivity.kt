@@ -47,12 +47,14 @@ class BookActivity: AppCompatActivity()  {
 
         viewModel.getDescription(bookUrl).observe(this, Observer {
             bookDescription = it
-            if(intent.extras?.getString("bookDescription") == "") book_description.text = bookDescription
+            if(intent.extras?.getString("bookDescription") == "")
+                book_description.text = bookDescription
         })
 
         viewModel.getSource(bookUrl).observe(this, Observer {
             bookSource = it
-            if(intent.extras?.getString("bookSource") == "") book_source.text = bookSource
+            if(intent.extras?.getString("bookSource") == "")
+                book_source.text = bookSource
         })
 
         setData()

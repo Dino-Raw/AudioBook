@@ -127,7 +127,7 @@ class Repository {
         return listBooks
     }
 
-    fun getChapters(book_url: String): ArrayList<Chapter>?
+    fun getChapters(book_url: String): ArrayList<Chapter>
     {
         val listChapter = arrayListOf<Chapter>()
         val chaptersTime = arrayListOf<String>()
@@ -205,7 +205,7 @@ class Repository {
 
     fun getDescription(url: String): String?
     {
-        var description = ""
+        val description: String
 
         try{
             description = Jsoup
@@ -218,8 +218,9 @@ class Repository {
         catch(e: IOException)
         {
             e.printStackTrace()
-            return description
+            return ""
         }
+
         return description
     }
 

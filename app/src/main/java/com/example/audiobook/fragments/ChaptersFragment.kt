@@ -21,8 +21,8 @@ class ChaptersFragment() : Fragment() {
         val chapter = mutableListOf<String>()
         for(i in 0 until AudioActivity.listChapters.size)
         {
-            chapter.add(
-                "Название: ${ AudioActivity.listChapters[i].chapterTitle}\nДлительность: ${ AudioActivity.listChapters[i].chapterTime}")
+            chapter.add("Название: ${ AudioActivity.listChapters[i].chapterTitle}\n" +
+                    "Длительность: ${ AudioActivity.listChapters[i].chapterTime}")
         }
 
         val chapterView = inflater.inflate(

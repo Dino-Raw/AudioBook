@@ -88,12 +88,14 @@ class NowPlayingFragment : Fragment() {
     private fun nextMedia()
     {
         AudioActivity.mediaService!!.nextMedia()
-        binding.chapterTitleNp.text = AudioActivity.listChapters[AudioActivity.chapterIndex].chapterTitle
+        binding.chapterTitleNp.text =
+            AudioActivity.listChapters[AudioActivity.chapterIndex].chapterTitle
     }
 
     private fun prevMedia()
     {
         AudioActivity.mediaService!!.prevMedia()
-        binding.chapterTitleNp.text = AudioActivity.listChapters[AudioActivity.chapterIndex].chapterTitle
+        binding.chapterTitleNp.text =
+            AudioActivity.listChapters[AudioActivity.chapterIndex].chapterTitle
     }
 }

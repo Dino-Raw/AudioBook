@@ -12,7 +12,8 @@ class ListBooksAdapter(private val type: String) : RecyclerView.Adapter<ListBook
     private val listBooks = mutableListOf<Book>()
 
     override fun onCreateViewHolder(parent: ViewGroup, pos: Int): ListBooksViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.book, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.book, parent, false)
         return ListBooksViewHolder(view, type)
     }
 

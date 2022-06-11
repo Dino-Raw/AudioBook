@@ -98,7 +98,8 @@ class GenreFragment : Fragment() {
         }
 
         buttonSearch.setOnClickListener{
-            url = "search/?q=${textSearch.text.toString().replace(" ", "%20")}&page="
+            url =
+                "search/?q=${textSearch.text.toString().replace(" ", "%20")}&page="
 
             val bundle = Bundle()
 

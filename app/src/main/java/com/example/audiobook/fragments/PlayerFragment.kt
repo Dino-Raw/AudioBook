@@ -19,17 +19,21 @@ class PlayerFragment() : Fragment() {
 
         fun setChapterData()
         {
-            binding!!.remainingTimeLabel.text = AudioActivity.listChapters[AudioActivity.chapterIndex].chapterTime
+            binding!!.remainingTimeLabel.text =
+                AudioActivity.listChapters[AudioActivity.chapterIndex].chapterTime
             binding!!.elapsedTimeLabel.text = AudioActivity.mediaService!!.createTimeLabel(
                 AudioActivity.mediaService!!.mp!!.currentPosition.toLong())
 
             binding!!.positionBar.max = AudioActivity.mediaService!!.mp!!.duration
             binding!!.positionBar.progress = AudioActivity.mediaService!!.mp!!.currentPosition
 
-            binding!!.chapterTitle.text = AudioActivity.listChapters[AudioActivity.chapterIndex].chapterTitle
+            binding!!.chapterTitle.text =
+                AudioActivity.listChapters[AudioActivity.chapterIndex].chapterTitle
             binding!!.speedTxt.text = AudioActivity.mediaService!!.speed.toString()
-            if(AudioActivity.isPlaying) binding!!.playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp)
-            else binding!!.playBtn.setBackgroundResource(R.drawable.ic_play_black_24dp)
+            if(AudioActivity.isPlaying)
+                binding!!.playBtn.setBackgroundResource(R.drawable.ic_pause_black_24dp)
+            else
+                binding!!.playBtn.setBackgroundResource(R.drawable.ic_play_black_24dp)
         }
 
     }
