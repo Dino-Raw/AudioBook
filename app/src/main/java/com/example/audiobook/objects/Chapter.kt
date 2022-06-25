@@ -1,4 +1,4 @@
-package com.example.audiobook.models
+package com.example.audiobook.objects
 
 import java.io.Serializable
 

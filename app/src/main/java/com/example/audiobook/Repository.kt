@@ -1,7 +1,7 @@
 package com.example.audiobook
 
-import com.example.audiobook.models.Book
-import com.example.audiobook.models.Chapter
+import com.example.audiobook.objects.Book
+import com.example.audiobook.objects.Chapter
 import org.jsoup.Jsoup
 import java.io.IOException
 import java.net.UnknownHostException

@@ -1,24 +1,28 @@
 package com.example.audiobook.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.audiobook.R
 import com.example.audiobook.adapters.ListBooksAdapter
-import com.example.audiobook.models.Book
+import com.example.audiobook.viewmodels.MyBooksViewModel
 import kotlinx.android.synthetic.main.fragment_my_books.*
-import java.io.IOException
-import java.util.ArrayList
 
 
 class MyBooksFragment(): Fragment() {
 
-    lateinit var myBooksAdapter: ListBooksAdapter
+    private lateinit var myBooksAdapter: ListBooksAdapter
     lateinit var condition : String
+
+    private val viewModel by lazy {
+        ViewModelProvider(this)[MyBooksViewModel()::class.java]
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -29,7 +33,17 @@ class MyBooksFragment(): Fragment() {
         list_books.layoutManager = layoutManager
 
         myBooksAdapter = ListBooksAdapter("library")
-        myBooksAdapter.set(getMyBooks())
+
+//        viewModel.getMyBooks(activity as AppCompatActivity, condition).observe(
+//            viewLifecycleOwner, Observer {
+//                myBooksAdapter.set(it)
+//            }
+//        )
+        viewModel.getMyBooks(activity as AppCompatActivity, condition)
+        viewModel.listBooksLiveData.observe(viewLifecycleOwner) {
+            myBooksAdapter.set(it)
+        }
+
         list_books.adapter = myBooksAdapter
     }
 
@@ -41,42 +55,5 @@ class MyBooksFragment(): Fragment() {
         return inflater.inflate(R.layout.fragment_my_books, container, false)
     }
 
-    private fun getMyBooks(): MutableList<Book>
-    {
-        val allBooks =
-            activity?.getSharedPreferences("condition_book", Context.MODE_PRIVATE)!!.all
 
-        val listBooks = mutableListOf<Book>()
-
-        if (allBooks != null)
-            for ((key, value) in allBooks)
-                if(value == condition)
-                {
-                    val sharedPref = activity?.getSharedPreferences(
-                        key.replace("/", "$"),
-                        Context.MODE_PRIVATE)
-
-                    val imgUrl = sharedPref?.getString("bookImgUrl", "").toString()
-                    val bookTitle = sharedPref?.getString("bookTitle", "").toString()
-                    val bookGenre = sharedPref?.getString("bookGenre", "").toString()
-                    val bookAuthor = sharedPref?.getString("bookAuthor", "").toString()
-                    val bookReader = sharedPref?.getString("bookReader", "").toString()
-                    val bookTime = sharedPref?.getString("bookTime", "").toString()
-                    val bookSource = sharedPref?.getString("bookSource", "").toString()
-                    val bookDescription =
-                        sharedPref?.getString("bookDescription", "").toString()
-
-                    listBooks.add(
-                        Book(imgUrl,
-                            key.replace("$", "/"),
-                            bookTitle,
-                            bookGenre,
-                            bookAuthor,
-                            bookReader,
-                            bookTime,
-                            bookDescription,
-                            bookSource))
-                }
-        return listBooks
-    }
 }

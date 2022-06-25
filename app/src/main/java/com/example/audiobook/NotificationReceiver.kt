@@ -4,10 +4,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.view.View
-import androidx.core.content.ContextCompat.startActivity
 import com.example.audiobook.fragments.NowPlayingFragment
 import com.example.audiobook.fragments.PlayerFragment
-import kotlin.coroutines.coroutineContext
 
 // реализация действий уведомления
 class NotificationReceiver : BroadcastReceiver() {

@@ -2,21 +2,16 @@ package com.example.audiobook
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.audiobook.models.Chapter
-import com.example.audiobook.viewmodels.ListBooksViewModel
+import com.example.audiobook.objects.Chapter
+import com.example.audiobook.viewmodels.BookViewModel
 import com.squareup.picasso.Picasso
-import com.squareup.picasso.Picasso.LoadedFrom
 import com.squareup.picasso.RequestCreator
 import kotlinx.android.synthetic.main.activity_book.*
 
@@ -29,7 +24,7 @@ class BookActivity: AppCompatActivity()  {
     private lateinit var bookImg : RequestCreator
 
     private val viewModel by lazy {
-        ViewModelProvider(this)[ListBooksViewModel::class.java]
+        ViewModelProvider(this)[BookViewModel::class.java]
     }
 
     private var listChapters = arrayListOf<Chapter>()

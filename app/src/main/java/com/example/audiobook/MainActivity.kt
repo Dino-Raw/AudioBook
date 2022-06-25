@@ -4,12 +4,11 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
-import com.example.audiobook.AudioActivity.Companion.isVisible
 import com.example.audiobook.databinding.ActivityMainBinding
 import com.example.audiobook.fragments.GenreFragment
 import com.example.audiobook.fragments.ListBooksFragment
 import com.example.audiobook.fragments.SearchFragment
-import com.example.audiobook.models.Chapter
+import com.example.audiobook.objects.Chapter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.system.exitProcess
@@ -32,7 +31,7 @@ class MainActivity : AppCompatActivity(){
         SearchFragment.childFragment = GenreFragment()
     }
 
-    // очистка плеера
+    // отключение плеера
     override fun onDestroy() {
         super.onDestroy()
         if(AudioActivity.mediaService != null)
@@ -61,14 +60,12 @@ class MainActivity : AppCompatActivity(){
             return
         }
 
-        val builder = MaterialAlertDialogBuilder(this)
-        builder
+        MaterialAlertDialogBuilder(this)
             .setTitle("Выйти из приложения?")
             .setPositiveButton("ДА") {_, _ -> finish() }
             .setNegativeButton("НЕТ") {dialog, _-> dialog.dismiss()}
-
-        val customDialog = builder.create()
-        customDialog.show()
+            .create()
+            .show()
     }
 
 }

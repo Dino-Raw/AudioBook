@@ -1,6 +1,5 @@
 package com.example.audiobook
 
-import android.app.ActivityOptions
 import android.content.*
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -10,7 +9,7 @@ import com.example.audiobook.MediaPlayerService.LocalBinder
 import com.example.audiobook.adapters.PagersAdapter
 import com.example.audiobook.fragments.ChaptersFragment
 import com.example.audiobook.fragments.PlayerFragment
-import com.example.audiobook.models.Chapter
+import com.example.audiobook.objects.Chapter
 import kotlinx.android.synthetic.main.activity_audio.*
 import kotlin.properties.Delegates
 

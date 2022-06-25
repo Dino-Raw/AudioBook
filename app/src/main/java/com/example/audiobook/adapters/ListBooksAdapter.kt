@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.audiobook.R
-import com.example.audiobook.models.Book
+import com.example.audiobook.objects.Book
 import com.example.audiobook.viewholders.ListBooksViewHolder
 
 class ListBooksAdapter(private val type: String) : RecyclerView.Adapter<ListBooksViewHolder>(){

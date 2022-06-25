@@ -1,6 +1,5 @@
 package com.example.audiobook.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +14,6 @@ import com.example.audiobook.viewmodels.ListBooksViewModel
 import kotlinx.android.synthetic.main.fragment_list_books.*
 import androidx.recyclerview.widget.RecyclerView
 import java.lang.NullPointerException
-import kotlin.properties.Delegates
 
 
 class ListBooksFragment(private var url: String = "", private var type: String = "") : Fragment() {
