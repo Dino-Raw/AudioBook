@@ -1,4 +1,4 @@
-package com.example.audiobook
+package com.example.audiobook.services
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -20,8 +20,11 @@ import android.telephony.PhoneStateListener
 import android.telephony.TelephonyManager
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import com.example.audiobook.AudioActions
+import com.example.audiobook.R
+import com.example.audiobook.activities.AudioActivity
+import com.example.audiobook.broadcastreceivers.NotificationReceiver
 import com.example.audiobook.fragments.NowPlayingFragment
 import com.example.audiobook.fragments.PlayerFragment
 import java.io.IOException
@@ -36,7 +39,6 @@ class MediaPlayerService : Service(),
     var mp: MediaPlayer? = null
     var speed = 1F
     private var audioManager: AudioManager? = null
-    //private var resumePosition = 0
     private var ongoingCall = false
     private var phoneStateListener: PhoneStateListener? = null
     private var telephonyManager: TelephonyManager? = null
@@ -346,7 +348,8 @@ class MediaPlayerService : Service(),
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         {
-            val notificationChannel = NotificationChannel(AudioActions.CHANNEL_ID,
+            val notificationChannel = NotificationChannel(
+                AudioActions.CHANNEL_ID,
                 "My Notifications",
                 NotificationManager.IMPORTANCE_DEFAULT)
 
@@ -408,16 +411,19 @@ class MediaPlayerService : Service(),
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setOnlyAlertOnce(true)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            .addAction(R.drawable.ic_skip_previous_black_24dp,
+            .addAction(
+                R.drawable.ic_skip_previous_black_24dp,
                 AudioActions.ACTION_PREVIOUS,
                 playbackAction(3))
             .addAction(playPauseIcon,
                 playPauseTitle,
                 playbackAction(playPause))
-            .addAction(R.drawable.ic_skip_next_black_24dp,
+            .addAction(
+                R.drawable.ic_skip_next_black_24dp,
                 AudioActions.ACTION_NEXT,
                 playbackAction(2))
-            .addAction(R.drawable.ic_baseline_close_24,
+            .addAction(
+                R.drawable.ic_baseline_close_24,
                 AudioActions.ACTION_STOP,
                 playbackAction(4))
 

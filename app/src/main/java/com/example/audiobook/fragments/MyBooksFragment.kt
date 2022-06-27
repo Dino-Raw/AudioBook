@@ -34,11 +34,6 @@ class MyBooksFragment(): Fragment() {
 
         myBooksAdapter = ListBooksAdapter("library")
 
-//        viewModel.getMyBooks(activity as AppCompatActivity, condition).observe(
-//            viewLifecycleOwner, Observer {
-//                myBooksAdapter.set(it)
-//            }
-//        )
         viewModel.getMyBooks(activity as AppCompatActivity, condition)
         viewModel.listBooksLiveData.observe(viewLifecycleOwner) {
             myBooksAdapter.set(it)

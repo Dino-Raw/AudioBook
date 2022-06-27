@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.fragment.app.Fragment
 import com.example.audiobook.*
+import com.example.audiobook.activities.AudioActivity
 import com.squareup.picasso.Picasso
 import com.example.audiobook.databinding.FragmentPlayerBinding
 import kotlinx.android.synthetic.main.fragment_player.*
@@ -43,7 +44,6 @@ class PlayerFragment() : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        val a = 0
         binding = FragmentPlayerBinding.inflate(inflater, container, false)
         return binding!!.root
     }

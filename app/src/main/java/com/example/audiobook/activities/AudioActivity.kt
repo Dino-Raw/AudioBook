@@ -1,15 +1,17 @@
-package com.example.audiobook
+package com.example.audiobook.activities
 
 import android.content.*
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.IBinder
 import androidx.appcompat.app.AppCompatActivity
-import com.example.audiobook.MediaPlayerService.LocalBinder
+import com.example.audiobook.R
+import com.example.audiobook.services.MediaPlayerService.LocalBinder
 import com.example.audiobook.adapters.PagersAdapter
 import com.example.audiobook.fragments.ChaptersFragment
 import com.example.audiobook.fragments.PlayerFragment
-import com.example.audiobook.objects.Chapter
+import com.example.audiobook.models.Chapter
+import com.example.audiobook.services.MediaPlayerService
 import kotlinx.android.synthetic.main.activity_audio.*
 import kotlin.properties.Delegates
 

@@ -3,39 +3,41 @@ package com.example.audiobook.viewmodels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.audiobook.Repository
-import com.example.audiobook.objects.Chapter
+import com.example.audiobook.models.Repository
+import com.example.audiobook.models.Chapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class BookViewModel: ViewModel() {
 
-    private var chapters: MutableLiveData<ArrayList<Chapter>> = MutableLiveData()
-    private var description: MutableLiveData<String> = MutableLiveData()
-    private var source: MutableLiveData<String> = MutableLiveData()
+    private val chaptersMutableLiveData: MutableLiveData<ArrayList<Chapter>> = MutableLiveData()
+    private val descriptionMutableLiveData: MutableLiveData<String> = MutableLiveData()
+    private val sourceMutableLiveData: MutableLiveData<String> = MutableLiveData()
+
+    val chaptersLiveData = chaptersMutableLiveData
+    val descriptionLiveData = descriptionMutableLiveData
+    val sourceLiveData = sourceMutableLiveData
+
     private val repository = Repository()
 
-    fun getChapters(url: String) : MutableLiveData<ArrayList<Chapter>>
+    fun getChapters(url: String)
     {
         viewModelScope.launch(Dispatchers.IO) {
-            chapters.postValue(repository.getChapters(url))
+            chaptersMutableLiveData.postValue(repository.getChapters(url))
         }
-        return chapters
     }
 
-    fun getDescription(url: String): MutableLiveData<String>
+    fun getDescription(url: String)
     {
         viewModelScope.launch(Dispatchers.IO) {
-            description.postValue(repository.getDescription(url))
+            descriptionMutableLiveData.postValue(repository.getDescription(url))
         }
-        return description
     }
 
-    fun getSource(url: String): MutableLiveData<String>
+    fun getSource(url: String)
     {
         viewModelScope.launch(Dispatchers.IO) {
-            source.postValue(repository.getSource(url))
+            sourceMutableLiveData.postValue(repository.getSource(url))
         }
-        return source
     }
 }

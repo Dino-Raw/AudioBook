@@ -1,4 +1,4 @@
-package com.example.audiobook
+package com.example.audiobook.activities
 
 import android.content.Context
 import android.content.Intent
@@ -9,7 +9,8 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.audiobook.objects.Chapter
+import com.example.audiobook.R
+import com.example.audiobook.models.Chapter
 import com.example.audiobook.viewmodels.BookViewModel
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.RequestCreator
@@ -36,17 +37,19 @@ class BookActivity: AppCompatActivity()  {
 
         val bookUrl = intent.extras?.getString("bookUrl").toString()
 
-        viewModel.getChapters(bookUrl).observe(this, Observer {
-            listChapters = it
-        })
+        viewModel.getChapters(bookUrl)
+        viewModel.getSource(bookUrl)
+        viewModel.getDescription(bookUrl)
 
-        viewModel.getDescription(bookUrl).observe(this, Observer {
+        viewModel.chaptersLiveData.observe(this, Observer { listChapters = it })
+
+        viewModel.descriptionLiveData.observe(this, Observer {
             bookDescription = it
             if(intent.extras?.getString("bookDescription") == "")
                 book_description.text = bookDescription
         })
 
-        viewModel.getSource(bookUrl).observe(this, Observer {
+        viewModel.sourceLiveData.observe(this, Observer {
             bookSource = it
             if(intent.extras?.getString("bookSource") == "")
                 book_source.text = bookSource

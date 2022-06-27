@@ -1,9 +1,12 @@
-package com.example.audiobook
+package com.example.audiobook.broadcastreceivers
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.view.View
+import com.example.audiobook.AudioActions
+import com.example.audiobook.activities.AudioActivity
+import com.example.audiobook.R
 import com.example.audiobook.fragments.NowPlayingFragment
 import com.example.audiobook.fragments.PlayerFragment
 

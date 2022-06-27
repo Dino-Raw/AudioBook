@@ -55,7 +55,10 @@ class ListBooksFragment(private var url: String = "", private var type: String =
         list_books.layoutManager = layoutManager
         list_books.adapter = listBooksAdapter
 
-        viewModel.getListBooks("$url${pageNum}", type).observe(viewLifecycleOwner, Observer {
+        viewModel.getListBooks("$url${pageNum}", type)
+        viewModel.getLastPage(url)
+
+        viewModel.booksLiveData.observe(viewLifecycleOwner) {
             try
             {
                 if(pageNum <= 1) listBooksAdapter.set(it)
@@ -65,9 +68,9 @@ class ListBooksFragment(private var url: String = "", private var type: String =
             {
                 e.printStackTrace()
             }
-        })
+        }
 
-        viewModel.getLastPage(url).observe(viewLifecycleOwner, Observer {
+        viewModel.lastPageLiveData.observe(viewLifecycleOwner, Observer {
             try
             {
                 pageLast = it
@@ -103,7 +106,7 @@ class ListBooksFragment(private var url: String = "", private var type: String =
                 )
                 {
                     viewModel.getListBooks("$url${pageNum}", type)
-                        .observe(viewLifecycleOwner, Observer {})
+                        //.observe(viewLifecycleOwner, Observer {})
                     loading = true
                 }
 

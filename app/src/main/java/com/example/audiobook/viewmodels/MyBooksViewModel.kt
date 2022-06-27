@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.audiobook.objects.Book
+import com.example.audiobook.models.Book
 
 
 class MyBooksViewModel() : ViewModel() {
@@ -16,7 +16,7 @@ class MyBooksViewModel() : ViewModel() {
     fun getMyBooks(
         activity: AppCompatActivity,
         condition: String
-    )// : MutableLiveData<MutableList<Book>>
+    )
     {
         val allBooks = activity.getSharedPreferences("condition_book", Context.MODE_PRIVATE)!!.all
         listBooks.clear()
@@ -48,10 +48,9 @@ class MyBooksViewModel() : ViewModel() {
                             bookReader,
                             bookTime,
                             bookDescription,
-                            bookSource))
+                            bookSource)
+                    )
                     listBooksMutableLiveData.value = listBooks
                 }
-
-        //return listBooksMutableLiveData
     }
 }

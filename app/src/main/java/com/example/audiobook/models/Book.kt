@@ -1,4 +1,4 @@
-package com.example.audiobook.objects
+package com.example.audiobook.models
 
 data class Book(
             val imgUrl: String = "",

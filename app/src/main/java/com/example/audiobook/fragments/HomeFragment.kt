@@ -8,21 +8,21 @@ import androidx.fragment.app.*
 import androidx.viewpager.widget.ViewPager
 import com.example.audiobook.R
 import com.example.audiobook.adapters.PagersAdapter
+import com.example.audiobook.databinding.FragmentHomeBinding
 import com.google.android.material.tabs.TabLayout
 
 
 class HomeFragment : Fragment() {
+
+    private lateinit var binding: FragmentHomeBinding
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
-
-        val homeView = inflater.inflate(R.layout.fragment_home, container, false)
-
-        val homePager: ViewPager = homeView.findViewById(R.id.home_view_pager)
-        val homeTabs: TabLayout = homeView.findViewById(R.id.home_tabs)
+    ): View {
 
         val homeAdapter = PagersAdapter(childFragmentManager)
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         homeAdapter.addFragment(
             ListBooksFragment("new/?page=", "home"), " Новинки ")
@@ -33,10 +33,10 @@ class HomeFragment : Fragment() {
         homeAdapter.addFragment(
             ListBooksFragment("rating/?w=month&page=", "home"), " Рейтинг ")
 
-        homePager.adapter = homeAdapter
-        homeTabs.setupWithViewPager(homePager)
+        binding.homeViewPager.adapter = homeAdapter
+        binding.homeTabs.setupWithViewPager(binding.homeViewPager)
 
-        return homeView
+        return binding.root
     }
 }
 

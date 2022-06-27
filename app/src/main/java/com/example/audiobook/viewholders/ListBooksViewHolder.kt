@@ -6,8 +6,8 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.audiobook.BookActivity
-import com.example.audiobook.objects.Book
+import com.example.audiobook.activities.BookActivity
+import com.example.audiobook.models.Book
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.book.view.*
 

@@ -1,14 +1,15 @@
-package com.example.audiobook
+package com.example.audiobook.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.audiobook.R
 import com.example.audiobook.databinding.ActivityMainBinding
 import com.example.audiobook.fragments.GenreFragment
 import com.example.audiobook.fragments.ListBooksFragment
 import com.example.audiobook.fragments.SearchFragment
-import com.example.audiobook.objects.Chapter
+import com.example.audiobook.models.Chapter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.system.exitProcess
