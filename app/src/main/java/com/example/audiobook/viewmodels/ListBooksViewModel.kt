@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.audiobook.models.Book
-import com.example.audiobook.models.Repository
+import com.example.audiobook.models.ListBooksModel
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 
@@ -15,19 +15,19 @@ class ListBooksViewModel : ViewModel(){
     val booksLiveData: LiveData<MutableList<Book>> = booksMutableLiveData
     val lastPageLiveData: LiveData<Int> = lastPageMutableLiveData
 
-    private val repository = Repository()
+    private val listBooksModel = ListBooksModel()
 
     fun getLastPage(url: String)
     {
         viewModelScope.launch(IO) {
-            lastPageMutableLiveData.postValue(repository.getLastPage(url))
+            lastPageMutableLiveData.postValue(listBooksModel.getLastPage(url))
         }
     }
 
     fun getListBooks(url: String, type: String)
     {
         viewModelScope.launch(IO) {
-            booksMutableLiveData.postValue(repository.getListBooks(url, type))
+            booksMutableLiveData.postValue(listBooksModel.getListBooks(url, type))
         }
     }
 }

@@ -22,14 +22,14 @@ class ListBooksFragment(private var url: String = "", private var type: String =
         var isVisibly = false
     }
 
-    private lateinit var listBooksAdapter: ListBooksAdapter
+    private lateinit var adapter: ListBooksAdapter
     private val viewModel by lazy {
         ViewModelProvider(this)[ListBooksViewModel::class.java] }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         var pageLast = 1
-        var pageNum = 1
+        var pageCurrent = 1
         var previousTotal = 0
         val visibleThreshold = 10
         var firstVisibleItem: Int
@@ -48,21 +48,21 @@ class ListBooksFragment(private var url: String = "", private var type: String =
             SearchFragment.isVisibly = true
         }
 
-        listBooksAdapter = ListBooksAdapter(type)
+        adapter = ListBooksAdapter(type)
 
         val layoutManager = LinearLayoutManager(this.context)
 
         list_books.layoutManager = layoutManager
-        list_books.adapter = listBooksAdapter
+        list_books.adapter = adapter
 
-        viewModel.getListBooks("$url${pageNum}", type)
+        viewModel.getListBooks("$url${pageCurrent}", type)
         viewModel.getLastPage(url)
 
         viewModel.booksLiveData.observe(viewLifecycleOwner) {
             try
             {
-                if(pageNum <= 1) listBooksAdapter.set(it)
-                else listBooksAdapter.add(it)
+                if(pageCurrent <= 1) adapter.set(it)
+                else adapter.add(it)
             }
             catch (e: NullPointerException)
             {
@@ -95,18 +95,17 @@ class ListBooksFragment(private var url: String = "", private var type: String =
                     if (totalItemCount > previousTotal)
                     {
                         loading = false
-                        pageNum++
+                        pageCurrent++
                         previousTotal = totalItemCount
                     }
                 }
                 if (!loading &&
                     totalItemCount - visibleItemCount <= firstVisibleItem + visibleThreshold &&
-                    pageNum <= pageLast
+                    pageCurrent <= pageLast
 
                 )
                 {
-                    viewModel.getListBooks("$url${pageNum}", type)
-                        //.observe(viewLifecycleOwner, Observer {})
+                    viewModel.getListBooks("$url${pageCurrent}", type)
                     loading = true
                 }
 
